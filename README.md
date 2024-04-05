@@ -14,10 +14,10 @@ The matterials posetd in this repository are under review in Stata Journal
 
  ```
  ** install from github
- net install xtsfsp, from("https://raw.githubusercontent.com/kerrydu/xtsfsp/main/ado/") replace
+ net install xtsfsp, from("https://raw.githubusercontent.com/kerrydu/xtsfsp/main/xtsfsp/ado") replace
  
  **install from gitee
- net install xtsfsp, from("https://gitee.com/kerrydu/spxtsfa/raw/main/ado") replace
+ net install xtsfsp, from("https://gitee.com/kerrydu/xtsfsp/main/xtsfsp/ado") replace
  ```
 
 
