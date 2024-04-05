@@ -1,0 +1,30 @@
+v 1
+d
+d Fitting spatial stochastic frontier models in Stata
+d
+
+
+
+f xtsfsp.ado 
+f xtsfsp.sthlp 
+f lxtsfsp.mlib 
+f xtsfspy.ado 
+f xtsfspyu.ado 
+f xtsfspyv.ado 
+f xtsfspyuv0.ado 
+f xtsfspyuv.ado 
+f xtsfspu.ado 
+f xtsfspv.ado 
+f xtsfspuv.ado 
+f xtsfspuv0.ado 
+f distinct2.ado 
+
+
+
+f xtsfsp_ex1.dta 
+f xtsfsp_ex2.dta 
+f xtsfsp_ex3.dta 
+f xtsfsp_w1.mmat 
+f xtsfsp_w2.mmat 
+f xtsfsp_w3.mmat 
+
