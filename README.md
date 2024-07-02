@@ -3,7 +3,9 @@ Fitting Spatial Panel SF models in STATA
 
 See the [manuscript](https://github.com/kerrydu/spxtsfa/blob/main/manuscript.pdf) for details
 
-The matterials posetd in this repository are under review in Stata Journal
+The materials posted in this repository are accepted in Stata Journal
+
+
 
 ## Requirement
  * Stata 16.1 or later version
@@ -43,11 +45,11 @@ If you use this module, please cite the following papers:
 > Orea, Luis and Álvarez, Inmaculada C. A New Stochastic Frontier Model with Cross-Sectional Effects in Both Noise and Inefficiency Terms, Journal of Econometrics, 2019, 213(2):556--577.
 
 ```
-@TechReport {Du2023,
+@TechReport {Du2024,
   Author = {Du, K., Orea, Luis and {\'A}lvarez, Inmaculada C.},
   Title = {Fitting spatial stochastic frontier models in Stata},
-  Note = {Working Paper},
-  Year = {2023},
+  Note = {Stata Journal},
+  Year = {2024},
 }
 ```
 
