@@ -37,7 +37,7 @@ Replay syntax
 {syntab :Frontier}
 {synopt :{opt nocons:tant}}suppress constant term{p_end}
 {synopt :{opt cost}}fit cost frontier model; default is {cmd:production}{p_end}
-{synopt :{cmd:wxvars({it:varlist})}}specify variables of spatial Durbin terms{p_end}
+{synopt :{cmd:wxvars({it:varlist})}}spatially lagged independent variables{p_end}
 
 {syntab :Variance function}
 {synopt :{cmdab:u:het(}{it:{help varlist}}[{cmd:,} {opt nocons:tant}]{cmd:)}}explanatory
@@ -48,10 +48,10 @@ variables for idiosyncratic error variance function; use {opt noconstant}
 to suppress constant term{p_end}
 
 {syntab :Spatial weight matrix}
-{synopt :{cmd:wy(}{it:W1 [W2...WT][,mata array]}{cmd:)}}specify spatial weight matrix for the dependent variable{p_end}
-{synopt :{cmd:wx(}{it:W1 [W2...WT][,mata array]}{cmd:)}}specify spatial weight matrix for the independent variables{p_end}
+{synopt :{cmd:wy(}{it:W1 [W2...WT][,mata array]}{cmd:)}}specify spatial weight matrix for lagged dependent variable{p_end}
+{synopt :{cmd:wx(}{it:W1 [W2...WT][,mata array]}{cmd:)}}specify spatial weight matrix for lagged independent variables{p_end}
 {synopt :{cmd:wu(}{it:W1 [W2...WT][,mata array]}{cmd:)}}specify spatial weight matrix for technical inefficiency{p_end}
-{synopt :{cmd:wv(}{it:W1 [W2...WT][,mata array]}{cmd:)}}specify spatial weight matrix for the random error{p_end}
+{synopt :{cmd:wv(}{it:W1 [W2...WT][,mata array]}{cmd:)}}specify spatial weight matrix for the error term{p_end}
 {synopt :{cmd:normalize(}{it:string}{cmd:)}}specify the normalized method of spatial weight matrixs{p_end}
 
 {syntab :Regression}
@@ -67,7 +67,7 @@ to suppress constant term{p_end}
 {synopt :{cmd:nolog}}omit the display of the criterion function iteration log{p_end}
 {synopt :{cmdab:mldis:play(}{it:{help ml##display_options:display_options}}{cmd:)}}control {cmd:ml display} options; seldom used{p_end}
 {synopt :{cmd:te(}{it:{help newvar:effvar}}{cmd:)}}create efficiency variables{p_end}
-{synopt :{opt genwxvars}}generate the spatial Durbin terms{p_end}
+{synopt :{opt genwvars}}generate the spatial Durbin terms (WX) and spatial lag indepvar (WY){p_end}
 
 {syntab :Other}
 {synopt :{cmdab:constraints(}{it:{help estimation options##constraints():constraints}}{cmd:)}}apply specified linear constraints{p_end}
@@ -102,7 +102,7 @@ explanation of their methodology and empirical analyses.
 default is {cmd:production}.
 
 {phang}
-{cmd: wxvars({it:varlist})} specifies variables for spatial Durbin terms.
+{cmd: wxvars({it:varlist})} specifies spatially lagged independent variables.
 
 {dlgtab:Ineffciency}
 
@@ -113,10 +113,10 @@ in the technical inefficiency variance function.
 {dlgtab:Spatial weught matrix}
 
 {phang}
-{opt wy(W1 [W2 ... WT][,mata array])} specifies that the spatial weight matrix for the dependent variable. 
+{opt wy(W1 [W2 ... WT][,mata array])} specifies that the spatial weight matrix for lagged dependent variable. 
 
 {phang}
-{opt wx(W1 [W2 ... WT][,mata array])} specifies that the spatial weight matrix for the independent variables. 
+{opt wx(W1 [W2 ... WT][,mata array])} specifies that the spatial weight matrix for lagged independent variable. 
 
 {phang}
 {opt wu(W1 [W2 ... WT][,mata array])} specifies spatial weight matrix for technical inefficiency{p_end}
@@ -186,9 +186,9 @@ Order is iterations, maxorder. lndetmc(50 100) is recommended.
 the production or cost efficiency variable.
 
 {phang}
-{cmd:genwxvars} generates the spatial Durbin terms. 
+{cmd:genwvars} generates the spatial Durbin terms (WX) and spatial lag indepvar (WY). 
 The option automatically extends any specified variable name in wxvars() 
-with W_ prefix.
+and the independent variable with W_ prefix. It is require for the postestimation.
 
 
 {marker optionsversion}{...}
@@ -244,7 +244,7 @@ Set initial values for estimated parameters. {p_end}
 {phang2}{bf:. {stata "mat b=(2,0.5,1,-1.5,4,-1.5,0.6,0.6)"}}{p_end} 
 {pstd}
 Stochastic cost model with three componnets of spatial cross-sectional dependence. {p_end}
-{phang2}{bf:. {stata "xtsfsp y x, cost uhet(z) wu(w2,mata) wv(w1,mata) wxvars(x) wx(`w',mata) init(b) genwxvars"}}{p_end}  
+{phang2}{bf:. {stata "xtsfsp y x, cost uhet(z) wu(w2,mata) wv(w1,mata) wxvars(x) wx(`w',mata) init(b) genwvars"}}{p_end}  
 {pstd}
 Handle missing values with delmssing option. {p_end}
 {phang2}{bf:. {stata "replace y = . if _n==1 | _n==100"}}{p_end} 
@@ -275,6 +275,13 @@ Stochastic cost model with spatial cross-sectional dependence in inefficiency an
 {synoptset 20 tabbed}{...}
 {p2col 5 20 24 2: Scalars}{p_end}
 {synopt:{cmd:e(N)}}number of observations{p_end}
+{synopt:{cmd:e(T)}}number of periods{p_end}
+{synopt:{cmd:e(rymin)}}minimum eigenvalues of wy {p_end}
+{synopt:{cmd:e(rymax)}}maximum eigenvalues of wy{p_end}
+{synopt:{cmd:e(rumin)}}minimum eigenvalues of wu{p_end}
+{synopt:{cmd:e(rumax)}}maximum eigenvalues of wu{p_end}
+{synopt:{cmd:e(rvmin)}}minimum eigenvalues of wv{p_end}
+{synopt:{cmd:e(rvmax)}}maximum eigenvalues of wv{p_end}
 {synopt:{cmd:e(k)}}number of parameters{p_end}
 {synopt:{cmd:e(k_eq)}}number of equations in {cmd:e(b)}{p_end}
 {synopt:{cmd:e(k_eq_model)}}number of equations in overall model test{p_end}
@@ -305,6 +312,11 @@ Stochastic cost model with spatial cross-sectional dependence in inefficiency an
 {synopt:{cmd:e(predict)}}program used to implement {cmd:predict}{p_end}
 {synopt:{cmd:e(cmdbase)}}base command{p_end}
 {synopt:{cmd:e(function)}}production or cost{p_end}
+{synopt:{cmd:e(wxvars)}}spatial Durbin variables{p_end}
+{synopt:{cmd:e(wx)}}array name generated by wx(){p_end}
+{synopt:{cmd:e(wy)}}array name generated by wy(){p_end}
+{synopt:{cmd:e(wu)}}array name generated by wu(){p_end}
+{synopt:{cmd:e(wv)}}array name generated by wv(){p_end}
 
 {synoptset 20 tabbed}{...}
 {p2col 5 20 24 2: Matrices}{p_end}
@@ -313,10 +325,6 @@ Stochastic cost model with spatial cross-sectional dependence in inefficiency an
 {synopt:{cmd:e(gradient)}}gradient vector{p_end}
 {synopt:{cmd:e(V)}}variance-covariance matrix of the estimators{p_end}
 
-{synoptset 20 tabbed}{...}
-{p2col 5 20 24 2: Functions}{p_end}
-{synopt:{cmd:e(sample)}}marks estimation sample{p_end}
-{p2colreset}{...}
 
 {marker acknowledgments}{...}
 {title:Acknowledgments}

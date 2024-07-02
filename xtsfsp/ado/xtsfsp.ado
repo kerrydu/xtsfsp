@@ -1,3 +1,6 @@
+*! version 1.22, Monday, July 1, 2024 at 21:08:21
+* genwxvar => genwvar 
+* ereturn more information
 *! version 1.21, 29Oct2023
 *! version 1.2, 19Oct2023
 * change uhet(string); add vhet(string)
@@ -58,10 +61,10 @@ syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) wu(stri
                               te(name)  mldisplay(string) ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) level(real 95) COST wxvars(varlist) ///
 							  MLSEarch(string) MLMAXopt(string) DELVE CONSTraints(string) wy(string) wx(string) ///
-							  lndetfull lndetmc(numlist >0 min=2 max=2) GENWXVARS NOLOG Vhet(string)] 
+							  lndetfull lndetmc(numlist >0 min=2 max=2) GENWVARS NOLOG Vhet(string)] 
 
 *********************************************************
-if "`genwxvars'"!="" & `"`wxvars'"'!=""{
+if "`genwvars'"!="" & `"`wxvars'"'!=""{
 	foreach v in `wxvars'{
 		confirm new var W_`v'
 	}

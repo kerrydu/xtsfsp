@@ -15,7 +15,7 @@ end
 program Estimate, eclass sortpreserve
 
 syntax varlist,  Uhet(string) [ INItial(name) NOCONstant NORMalize(string) wu(string) ///
-                              wv(string) te(name) GENWXVARS mldisplay(string) ///
+                              wv(string) te(name) GENWVARS mldisplay(string) ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string)  ///
 							  level(real 95) COST wxvars(varlist) ///
 							  MLSEarch(string) MLMAXopt(string) DELVE ///
@@ -32,8 +32,25 @@ marksample touse
 local diopts level(`level') `mldisplay'
 mlopts std, `mlmodelopt' `mlmaxopt' `constraints'
 local cns constraints(`constraints')
-gettoken yvar xvars: varlist 
+//gettoken yvar xvars: varlist 
 //_fv_check_depvar `yvar'
+
+if ("`wxvars'"=="" & "`wx'"!=""){
+	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
+	di as error `"wx(`wx') must be combined with wxvars()"'
+	exit 198
+}  
+
+if ("`wxvars'"!="" & "`wx'"!="" & "`genwvars'"!=""){
+	foreach xv in `xvars'{
+		confirm new var W_`xv'
+	}
+}
+gettoken yvar xvars: varlist
+if ( "`genwvars'"!=""){
+	confirm new var W_`yvar'
+}
+
 if ("`initial'"!="" & "`delve'"!=""){
 	di "Warning: initial(`initial') overrides delve"
 }
@@ -56,6 +73,7 @@ local nwu = r(nw)
 	local time=r(tvar)
 	gettoken uhet0 : uhet, p(,)
 	gettoken vhet0 : vhet, p(,)
+	markout `touse' `uhet0' `vhet0'
     qui keep `varlist' `wxvars' `id' `time' `uhet0' `touse' `vhet0'
     tempvar order0
     qui gen int `order0' =_n
@@ -123,6 +141,9 @@ local nwu = r(nw)
 		}	
 
 **************
+	qui genwxvars `yvar', aname(w_ina) tvar(`time2') // Wednesday, June 26, 2024 at 21:35:25
+	local wyvar  `r(wxnames)'
+	mata: _order_wyvar = st_data(.,"`wyvar'","`touse'")	
    * generating Wx
 	if(`"`wxvars'"'!=""){
       qui genwxvars `wxvars', aname(`wxwx') tvar(`time2')
@@ -133,8 +154,8 @@ local nwu = r(nw)
 ************
 
 	if("`initial'"=="" & "`delve'"!="") { 
-		qui genwxvars `yvar', aname(w_ina) tvar(`time2')
-	    local wyvar `r(wxnames)'
+		//qui genwxvars `yvar', aname(w_ina) tvar(`time2')
+	    //local wyvar `r(wxnames)'
 		qui corr `yvar' `wyvar'
 		local rhoy = r(rho)
 		qui frontier `yvar' `xvars' `wxvars2',`noconstant' uhet(`uhet') iterate(50) `cns' vhet(`vhet')
@@ -204,6 +225,16 @@ local nwu = r(nw)
    ereturn local wy w_ina 
    ereturn local wv w_ina 
    ereturn local wu w_ina 
+   ereturn local wx `wxwx'
+   ereturn local wxvars `wxvars'
+   ereturn scalar T = `T'
+   ereturn scalar rumin = $rmin
+   ereturn scalar rumax = $rmax
+   ereturn scalar rymin = $rmin
+   ereturn scalar rymax = $rmax   
+   ereturn scalar rvmin = $rmin
+   ereturn scalar rvmax = $rmax  
+
    Replay , `diopts'
    if `"`wxvars'"'!="" di "      W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"
 
@@ -220,7 +251,7 @@ local nwu = r(nw)
 
   restore
   
-  	if(`"`wxvars'"'!=""&"`genwxvars'"!=""){
+  	if(`"`wxvars'"'!=""&"`genwvars'"!=""){
       foreach v in `wxvars'{
         qui gen double W_`v' = .
         label var W_`v' `"W*`v'"'
@@ -230,7 +261,11 @@ local nwu = r(nw)
 	  ereturn local wx `wxwx'
 
 	}
-
+	if("`genwvars'"!=""){
+		qui gen double W_`yvar' = .
+		mata: getdatafmata(_order_wyvar,_order_0,"W_`yvar'")
+		cap mata mata drop  _order_wyvar
+	  }	
    if(`"`te'"'!=""){
 		qui gen double `te' = .
 		label var `te' "technical efficiency"

@@ -17,7 +17,7 @@ program Estimate, eclass sortpreserve
 
 syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
                               wu(string)  te(name) mldisplay(string)  wx(string) wxvars(varlist) ///
-                              DELmissing MLPLOT NOGraph MLMODELopt(string) level(real 95) GENWXVARS ///
+                              DELmissing MLPLOT NOGraph MLMODELopt(string) level(real 95) GENWVARS ///
 							  MLSEarch(string) MLMAXopt(string) DELVE CONSTraints(string) COST ///
 							  LNDETFULL lndetmc(numlist >0 min=2 max=2) NOLOG Vhet(string)] 
 
@@ -37,9 +37,16 @@ if ("`wxvars'"!="" & "`wx'"==""){
 }
 
 if ("`wxvars'"=="" & "`wx'"!=""){
-	di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
-}
+	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
+	di as error `"wx(`wx') must be combined with wxvars()"'
+	exit 198
+}  
 
+if ("`wxvars'"!="" & "`wx'"!="" & "`genwvars'"!=""){
+	foreach xv in `xvars'{
+		confirm new var W_`xv'
+	}
+}
 preserve
 
 marksample touse 
@@ -71,6 +78,7 @@ local nwu = r(nw)
 	local time=r(tvar)
 	gettoken uhet0 : uhet, p(,)
 	gettoken vhet0 : vhet, p(,)
+	markout `touse' `uhet0' `vhet0'
     qui keep `varlist' `wxvars' `id' `time' `uhet0' `touse' `vhet0'
     tempvar order0
     qui gen int `order0' =_n
@@ -198,7 +206,12 @@ local nwu = r(nw)
    ereturn local cmdbase ml
    ereturn local cmdline `cmdline'
    ereturn local wu w_ina
-
+   ereturn local wxwx `wxwx'
+   ereturn local wxvars `wxvars'
+   ereturn scalar T = `T'
+   ereturn scalar rumin = $rmin
+   ereturn scalar rumax = $rmax
+   ereturn local hasgenwvars `genwvars'
    Replay , `diopts'
    if `"`wxvars'"'!="" di "      W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"
    if(`"`te'"'!=""){
@@ -221,7 +234,7 @@ local nwu = r(nw)
 
   restore
   
-  	if(`"`wxvars'"'!=""&"`genwxvars'"!=""){
+  	if(`"`wxvars'"'!=""&"`genwvars'"!=""){
       foreach v in `wxvars'{
         qui gen double W_`v' = .
         label var W_`v' `"W*`v'"'

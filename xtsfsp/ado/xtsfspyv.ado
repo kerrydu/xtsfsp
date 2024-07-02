@@ -21,7 +21,7 @@ syntax syntax varlist,  Uhet(string) wv(string)
 							  level(real 95) COST wxvars(varlist) ///
 							  MLSEarch(string) MLMAXopt(string) DELVE ///
 							  CONSTraints(string)  wx(string) ///
-							  LNDETFULL lndetmc(numlist >0 min=2 max=2) GENWXVARS NOLOG Vhet(string)] 
+							  LNDETFULL lndetmc(numlist >0 min=2 max=2) GENWVARS NOLOG Vhet(string)] 
 
 //marksample touse 
 if ("`nolog'"!="") local nolog qui
@@ -32,8 +32,20 @@ if ("`wxvars'"!="" & "`wx'"==""){
 }
 
 if ("`wxvars'"=="" & "`wx'"!=""){
-	di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
+	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
+	di as error `"wx(`wx') must be combined with wxvars()"'
+	exit 198
 }  
+
+if ("`wxvars'"!="" & "`wx'"!="" & "`genwvars'"!=""){
+	foreach xv in `xvars'{
+		confirm new var W_`xv'
+	}
+}
+gettoken yvar xvars: varlist
+if ( "`genwvars'"!=""){
+	confirm new var W_`yvar'
+}
 
 preserve
 marksample touse 
@@ -65,6 +77,7 @@ local nwv = r(nw)
 	local time=r(tvar)
 	gettoken uhet0 : uhet, p(,)
 	gettoken vhet0 : vhet, p(,)
+	markout `touse' `uhet0' `vhet0'
     qui keep `varlist' `wxvars' `id' `time' `uhet0' `touse' `vhet0'
     tempvar order0
     qui gen int `order0' =_n
@@ -168,6 +181,9 @@ local nwv = r(nw)
 ****************
     qui keep if `touse'
     mata: _pan_tvar =st_data( .,"`time2'")
+	qui genwxvars `yvar', aname(w_ina) tvar(`time2') // Wednesday, June 26, 2024 at 21:35:25
+	local wyvar  `r(wxnames)'
+	mata: _order_wyvar = st_data(.,"`wyvar'","`touse'")	
    * generating Wx
 	if(`"`wxvars'"'!=""){
       qui genwxvars `wxvars', aname(`wxwx') tvar(`time2')
@@ -178,8 +194,8 @@ local nwv = r(nw)
 ************
 
 	if("`initial'"=="" & "`delve'"!="") {
-		qui genwxvars `yvar', aname(wy_ina) tvar(`time2')
-	    local wyvar `r(wxnames)'
+		//qui genwxvars `yvar', aname(wy_ina) tvar(`time2')
+	    //local wyvar `r(wxnames)'
 		qui corr `yvar' `wyvar'
 		local rhoy = r(rho)			 
 		qui frontier `yvar' `xvars' `wxvars2',`noconstant' uhet(`uhet') iterate(50) `cns'  vhet(`vhet')
@@ -250,6 +266,15 @@ local nwv = r(nw)
    ereturn local cmdline `cmdline'
    ereturn local wy wy_ina 
    ereturn local wv wv_ina 
+   ereturn local wx `wxwx'
+   ereturn local wxvars `wxvars'
+   ereturn scalar T = `T'
+   ereturn scalar rymin = $rymin
+   ereturn scalar rymax = $rymax   
+   ereturn scalar rvmin = $rvmin
+   ereturn scalar rvmax = $rvmax  
+
+
 
    Replay , `diopts' 
    if `"`wxvars'"'!="" di "     W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"
@@ -266,7 +291,7 @@ local nwv = r(nw)
 
   restore
   
-  	if(`"`wxvars'"'!=""&"`genwxvars'"!=""){
+  	if(`"`wxvars'"'!=""&"`genwvars'"!=""){
       foreach v in `wxvars'{
         qui gen double W_`v' = .
         label var W_`v' `"W*`v'"'
@@ -276,7 +301,11 @@ local nwv = r(nw)
 	  ereturn local wx `wxwx'
 
 	}
-
+	if("`genwvars'"!=""){
+		qui gen double W_`yvar' = .
+		mata: getdatafmata(_order_wyvar,_order_0,"W_`yvar'")
+		cap mata mata drop  _order_wyvar
+	  }	
    if(`"`te'"'!=""){
 		qui gen double `te' = .
 		label var `te' "technical efficiency"

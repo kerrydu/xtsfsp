@@ -17,7 +17,7 @@ syntax varlist,Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
                               wu(string) wv(string) mldisplay(string) wx(string) wxvars(varlist) ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) level(real 95) COST ///
 							  MLSEarch(string) MLMAXopt(string) DELVE CONSTraints(string) te(name) ///
-							  lndetmc(numlist >0 min=2 max=2) GENWXVARS NOLOG Vhet(string)] 
+							  lndetmc(numlist >0 min=2 max=2) GENWVARS NOLOG Vhet(string)] 
 
 //marksample touse 
 if ("`nolog'"!="") local nolog qui
@@ -35,7 +35,15 @@ if ("`wxvars'"!="" & "`wx'"==""){
 }
 
 if ("`wxvars'"=="" & "`wx'"!=""){
-	di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
+	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
+	di as error `"wx(`wx') must be combined with wxvars()"'
+	exit 198
+}  
+
+if ("`wxvars'"!="" & "`wx'"!="" & "`genwvars'"!=""){
+	foreach xv in `xvars'{
+		confirm new var W_`xv'
+	}
 }
 preserve
 
@@ -69,6 +77,7 @@ local nwv = r(nw)
 	local time=r(tvar)
 	gettoken uhet0 : uhet, p(,)
 	gettoken vhet0 : vhet, p(,)
+	markout `touse' `uhet0' `vhet0'
     qui keep `varlist' `wxvars' `id' `time' `uhet0' `touse' `vhet0'
     tempvar order0
     qui gen int `order0' =_n	
@@ -213,6 +222,15 @@ local nwv = r(nw)
    ereturn local cmdline `cmdline'
    ereturn local wu wu_ina 
    ereturn local wv wv_ina  
+   ereturn local wx `wxwx'
+   ereturn local wxvars `wxvars'
+   ereturn scalar T = `T'
+   ereturn scalar rumin = $rumin
+   ereturn scalar rumax = $rumax  
+   ereturn scalar rvmin = $rvmin
+   ereturn scalar rvmax = $rvmax  
+   ereturn local hasgenwvars `genwvars'
+
    Replay , `diopts'
    if `"`wxvars'"'!="" di "      W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"
    if(`"`te'"'!=""){
@@ -227,7 +245,7 @@ local nwv = r(nw)
 
   restore
   
-  	if(`"`wxvars'"'!=""&"`genwxvars'"!=""){
+  	if(`"`wxvars'"'!=""&"`genwvars'"!=""){
       foreach v in `wxvars'{
         qui gen double W_`v' = .
         label var W_`v' `"W*`v'"'
