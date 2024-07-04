@@ -5,14 +5,14 @@
 program define xtsfspyu, eclass sortpreserve
 version 16
 
-	if replay() {
-		if (`"`e(cmd)'"' != "xtsfspyu") error 301
-		Replay `0'
-	}
-	else	Estimate `0'
-end
+// 	if replay() {
+// 		if (`"`e(cmd)'"' != "xtsfspyu") error 301
+// 		Replay `0'
+// 	}
+// 	else	Estimate `0'
+// end
 
-program Estimate, eclass sortpreserve
+// program Estimate, eclass sortpreserve
 
 syntax varlist,Uhet(string) wu(string) wy(string) [INItial(name) NOCONstant ///
                               NORMalize(string) te(name) mldisplay(string) ///
@@ -29,7 +29,10 @@ if ("`wxvars'"!="" & "`wx'"==""){
 	di as error "varlist is specified in wxvars(), but spmatrix is not specified in wx()"
 	exit 198
 }
-
+local varlist: list uniq varlist
+local uhet: list uniq uhet
+local vhet: list uniq vhet
+local xvars: list uniq xvars
 if ("`wxvars'"=="" & "`wx'"!=""){
 	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
 	di as error `"wx(`wx') must be combined with wxvars()"'
@@ -173,7 +176,7 @@ local nwu = r(nw)
     qui keep if `touse'
     mata: _pan_tvar =st_data( .,"`time2'")
 **************
-	qui genwxvars `yvar', aname(w_ina) tvar(`time2') // Wednesday, June 26, 2024 at 21:35:25
+	qui genwxvars `yvar', aname(wy_ina) tvar(`time2') // Wednesday, June 26, 2024 at 21:35:25
 	local wyvar  `r(wxnames)'
 	mata: _order_wyvar = st_data(.,"`wyvar'","`touse'")	
    * generating Wx
@@ -251,11 +254,12 @@ local nwu = r(nw)
 	local mlmaxopt: list uniq mlmaxopt  
    `nolog' ml max, `mlmaxopt'  
 
-   ereturn local cmd xtsfspyu
+   ereturn local cmd xtsfsp
    ereturn local cmdbase ml
    ereturn local cmdline `cmdline'
    ereturn local wy wy_ina 
    ereturn local wu wu_ina 
+   ereturn local wv .
    ereturn local wx `wxwx'
    ereturn local wxvars `wxvars'
    ereturn scalar T = `T'
@@ -263,19 +267,40 @@ local nwu = r(nw)
    ereturn scalar rumax = $rumax
    ereturn scalar rymin = $rymin
    ereturn scalar rymax = $rymax   
-   ereturn local hasgenwvars `genwvars'
+   ereturn scalar rvmin = .
+   ereturn scalar rvmax = .
+   ereturn local ivar `id'
+   ereturn local tvar `time'
+   ereturn local depvar `yvar'
+   ereturn local xeq `xvars' `wxvars2',`noconstant'
+   ereturn local veq `vhet'
+   ereturn local ueq `uhet'
+   ereturn local hasgenwvars `genwvars'  
+
+   local tau = _b[Wu:_cons]
+   local tau = $rmin/(1+exp(`tau'))+$rmax*exp(`tau')/(1+exp(`tau'))
+   local gamma = .
+   local rho = _b[Wy:_cons]
+   local rho = $rmin/(1+exp(`rho'))+$rmax*exp(`rho')/(1+exp(`rho'))
+  
+   ereturn scalar rho = `rho'
+   ereturn scalar gamma = `gamma'
+   ereturn scalar tau = `tau'
+
    Replay , `diopts'
    if `"`wxvars'"'!="" di "     W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"
 
-    if(`"`te'"'!=""){
-		tempname bml
-		mat `bml' = e(b)
-		mata: _b_ml = st_matrix("`bml'")	
-	    local nx: word count `xvars' `wxvars2'
-		//local nz: word count `uhet'
-		if("`noconstant'"=="") local noconstant constant
-		mata:_te_order=xtsfspyu_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
-   }	
+//     if(`"`te'"'!=""){
+// 		tempname bml
+// 		mat `bml' = e(b)
+// 		mata: _b_ml = st_matrix("`bml'")	
+// 	    local nx: word count `xvars' `wxvars2'
+// 		//local nz: word count `uhet'
+// 		if("`noconstant'"=="") local noconstant constant
+// 		mata:_te_order=xtsfspyu_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
+// 		mata: rho = $rymin/(1+exp(_b[Wy:_cons]))+$rymax*exp(_b[Wy:_cons])/(1+exp(_b[Wy:_cons]))	
+// 		mata:spte(wy_ina,rho,`T',_te_order,htildeut=.)
+//    }	
 
   restore
   
@@ -292,16 +317,17 @@ local nwu = r(nw)
 
 	if("`genwvars'"!=""){
 		qui gen double W_`yvar' = .
+		label var W_`yvar' "W*`yvar'"
 		mata: getdatafmata(_order_wyvar,_order_0,"W_`yvar'")
 		cap mata mata drop  _order_wyvar
 	  }	
 
-   if(`"`te'"'!=""){
-		qui gen double `te' = .
-		label var `te' "technical efficiency"
-		mata: getdatafmata(_te_order,_order_0,"`te'")
-		cap mata mata drop  _te_order		
-   }  	
+//    if(`"`te'"'!=""){
+// 		qui gen double `te' = .
+// 		label var `te' "technical efficiency"
+// 		mata: getdatafmata(_te_order,_order_0,"`te'")
+// 		cap mata mata drop  _te_order		
+//    }  	
    	if(`nummissing'>0){
 		di "      Missing values found"
 		di "      The regression sample recorded by variable __e_sample__"
@@ -327,6 +353,9 @@ program Replay
        */ d(exp(@)*(($rumax-$rumin)/(1+exp(@))^2)))  
 	di "Note: Wy:_cons and Wu:_cons are the transformed parameters;"
 	di "      rho and tau are their origin metrics in spatial components, respectively"	   
+	global diparmopt diparm(Wy, label(rho) prob function($rymin/(1+exp(@))+$rymax*exp(@)/(1+exp(@)))  d(exp(@)*(($rymax-$rymin)/(1+exp(@))^2)))  diparm(Wu, label(tau) prob function($rumin/(1+exp(@))+$rumax*exp(@)/(1+exp(@)))  d(exp(@)*(($rumax-$rumin)/(1+exp(@))^2)))
+	global end1 "Note: Wy:_cons and Wu:_cons are the transformed parameters;"
+	global end2 "      rho and tau are their origin metrics in spatial components, respectively"	
 end
 
 /////////////////////////////

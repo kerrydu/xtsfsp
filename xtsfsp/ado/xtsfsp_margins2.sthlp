@@ -23,12 +23,9 @@ Syntax
 {synoptset 31 tabbed}{...}
 {synopthdr}
 {synoptline}
-{synopt :{opt reps(#)}}set # of replications for Monte Carlo simulation{p_end}
-{synopt :{opt seed(#)}}set seed for Monte Carlo simulation{p_end}
-{synopt :{opt normalize}}normalize marginal effects by common inefficiency{p_end}
-{synopt :{opt fixuts}}set common efficiency constant{p_end}
-
-{synopt :{opt nodots}}suppress iteration dots{p_end}
+{synopt :{opt mc(#)}}set # of replications for Monte Carlo simulation{p_end}
+{synopt :{opt seed(#)}}set seed for generating random number{p_end}
+{synopt :{nodots}}suppress iteration dots{p_end}
 
 
 
@@ -48,17 +45,11 @@ explanation of their methodology and empirical analyses.{p_end}
 {title:Options}
 
 {phang}
-{cmd:breps(#)} specifes # of replications for Monte Carlo simulation
-for estimating the standard errors. The default is 200.
+{cmd:mc(#)} specifes # of replications for Monte Carlo simulation
+for estimating the standard errors. If not specified, the delta method is used.
 
 {phang}
 {cmd:seed(#)} specifies the seed for Monte Carlo simulation. The default is 123.
-
-{phang}
-{cmd:normalize} normalize the inefficiency by the common inefficiency.
-
-{phang}
-{cmd:fixuts} set the common inefficiency fixed in MC simulations.
 
 {phang}
 {cmd: nodots} suppress iteration dots.
@@ -78,9 +69,9 @@ Setup{p_end}
 Stochastic production model with four different sources of spatial cross-sectional dependence {p_end}
 {phang2}{bf:. {stata "xtsfsp y x, uhet(z) wu(w1,mata) wy(w1,mata) wv(w1,mata) wx(w1,mata) wxvars(x) te(te)"}}{p_end}
 
-{phang2}{bf:. {stata "xtsfsp_margins z, reps(500)"}}{p_end}
+{phang2}{bf:. {stata "xtsfsp_margins z"}}{p_end}
 
-{phang2}{bf:. {stata "xtsfsp_margins z, reps(200) normalize"}}{p_end}
+{phang2}{bf:. {stata "xtsfsp_margins z, mc(200)"}}{p_end}
     
 {marker results}{...} 
 {title:Stored results}
@@ -178,4 +169,4 @@ Spain{break}
 
 {p 7 14 2}{manhelp frontier R}, 
 {manhelp xtfrontier XT}{p_end} 
-{p 7 14 2}{helpb xtsfsp}, {helpb sfkk},  {helpb nwxtregress} (if installed)
+{p 7 14 2}{helpb sfpanel}, {helpb sfkk},  {helpb nwxtregress} (if installed)

@@ -1,5 +1,5 @@
 {smcl}
-{cmd:help xtsfsp}
+{cmd:help xtsfsp}{right:also see:  {help xtsfsp postestimation}}
 {hline}
 
 {title:Title}
@@ -76,7 +76,11 @@ to suppress constant term{p_end}
 {p 4 6 2}
 uhet() is required. At least one of wy(),wu() and wv() should be specified. 
 A panel variable and a time variable must be specified; use xtset. {p_end}
-
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+See {help xtsfsp postestimation} and {help xtsfsp margins}for
+features available after estimation.{p_end}
 
 {marker description}{...}
 {title:Description}

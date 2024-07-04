@@ -1,3 +1,4 @@
+*! version 1.25, 2024-07-04
 *! version 1.22, Monday, July 1, 2024 at 21:08:21
 * genwxvar => genwvar 
 * ereturn more information
@@ -35,15 +36,17 @@ if("`version'"!=""){
 }
 
 	if replay() {
-		if      (`"`e(cmd)'"' == "xtsfspyuv")  xtsfspyuv   `0'
-		else if (`"`e(cmd)'"' == "xtsfspyuv0") xtsfspyuv0  `0'
-		else if (`"`e(cmd)'"' == "xtsfspyu")   xtsfspyu    `0'
-		else if (`"`e(cmd)'"' == "xtsfspyv")   xtsfspyv    `0'
-		else if (`"`e(cmd)'"' == "xtsfspy")    xtsfspy     `0'
-		else if (`"`e(cmd)'"' == "xtsfspu")    xtsfspu     `0'
-		else if (`"`e(cmd)'"' == "xtsfspv")    xtsfspv     `0'
-		else if (`"`e(cmd)'"' == "xtsfspuv")   xtsfspuv    `0'
-		else if (`"`e(cmd)'"' == "xtsfspuv0")  xtsfspuv0   `0'
+		// if      (`"`e(cmd)'"' == "xtsfspyuv")  xtsfspyuv   `0'
+		// else if (`"`e(cmd)'"' == "xtsfspyuv0") xtsfspyuv0  `0'
+		// else if (`"`e(cmd)'"' == "xtsfspyu")   xtsfspyu    `0'
+		// else if (`"`e(cmd)'"' == "xtsfspyv")   xtsfspyv    `0'
+		// else if (`"`e(cmd)'"' == "xtsfspy")    xtsfspy     `0'
+		// else if (`"`e(cmd)'"' == "xtsfspu")    xtsfspu     `0'
+		// else if (`"`e(cmd)'"' == "xtsfspv")    xtsfspv     `0'
+		// else if (`"`e(cmd)'"' == "xtsfspuv")   xtsfspuv    `0'
+		// else if (`"`e(cmd)'"' == "xtsfspuv0")  xtsfspuv0   `0'
+		// else error 301
+		if  (`"`e(cmd)'"' == "xtsfsp") Replay `0'
 		else error 301
 	}
 	else Estimate `0'
@@ -64,6 +67,9 @@ syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) wu(stri
 							  lndetfull lndetmc(numlist >0 min=2 max=2) GENWVARS NOLOG Vhet(string)] 
 
 *********************************************************
+global diparmopt
+global end1 
+global end2
 if "`genwvars'"!="" & `"`wxvars'"'!=""{
 	foreach v in `wxvars'{
 		confirm new var W_`v'
@@ -239,7 +245,24 @@ foreach w in `wnames'{
 
 
 end
+/////////////////////////////////////////
+cap program drop Replay
+program Replay
+	syntax [, Level(cilevel) * ]
+	ml display , level(`level')	`options'  $diparmopt
+	tablenote       
+end
 
+cap program drop tablenote 
+program define tablenote 
+version 16 
+
+if "$end1"!=""{
+	di "$end1"
+	di "$end2"
+}
+
+end
 
 ///////////////////////////////////
 

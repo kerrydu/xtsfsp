@@ -1,3 +1,5 @@
+*! version 1.23, 2024-07-03
+* restructed te estimates
 * version 1.0, 2023-10-10
 * subprogram for xtsfsp 
 * Case6: y=x+v-u; u=[I-tauW]^{-1}u*
@@ -6,14 +8,14 @@
 program define xtsfspu, eclass sortpreserve
 version 16
 
-	if replay() {
-		if (`"`e(cmd)'"' != "xtsfspu") error 301
-		Replay `0'
-	}
-	else	Estimate `0'
-end
+// 	if replay() {
+// 		if (`"`e(cmd)'"' != "xtsfspu") error 301
+// 		Replay `0'
+// 	}
+// 	else	Estimate `0'
+// end
 
-program Estimate, eclass sortpreserve
+// program Estimate, eclass sortpreserve
 
 syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
                               wu(string)  te(name) mldisplay(string)  wx(string) wxvars(varlist) ///
@@ -35,7 +37,10 @@ if ("`wxvars'"!="" & "`wx'"==""){
 	di as error "varlist is specified in wxvars(), but spmatrix is not specified in wx()"
 	exit 198
 }
-
+local varlist: list uniq varlist
+local uhet: list uniq uhet
+local vhet: list uniq vhet
+local wxvars: list uniq wxvars
 if ("`wxvars'"=="" & "`wx'"!=""){
 	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
 	di as error `"wx(`wx') must be combined with wxvars()"'
@@ -202,19 +207,46 @@ local nwu = r(nw)
    
    `nolog' ml max, `mlmaxopt'  
 
-   ereturn local cmd xtsfspu
+   ereturn local cmd xtsfsp
    ereturn local cmdbase ml
    ereturn local cmdline `cmdline'
+   ereturn local ivar `id'
+   ereturn local tvar `time'
    ereturn local wu w_ina
    ereturn local wxwx `wxwx'
+   ereturn local wy .
+   ereturn local wv .
    ereturn local wxvars `wxvars'
    ereturn scalar T = `T'
    ereturn scalar rumin = $rmin
    ereturn scalar rumax = $rmax
+   ereturn scalar rymin = .
+   ereturn scalar rymax = .
+   ereturn scalar rvmin = .
+   ereturn scalar rvmax = .
+   
    ereturn local hasgenwvars `genwvars'
+   ereturn local xeq `xvars' `wxvars2', `noconstant'
+   ereturn local veq `vhet'
+   ereturn local ueq `uhet'
+   ereturn local depvar `yvar'
+
+   local tau = _b[Wu:_cons]
+   local tau = $rmin/(1+exp(`tau'))+$rmax*exp(`tau')/(1+exp(`tau'))
+   local gamma = .
+   local rho =.
+   ereturn scalar tau = `tau'
+   ereturn scalar gamma = `gamma'
+   ereturn scalar rho = `rho'
+
    Replay , `diopts'
    if `"`wxvars'"'!="" di "      W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"
+
+   /*
    if(`"`te'"'!=""){
+		local wu w_ina 
+		local wy .
+		local wv .
 		tempname bml
 		mat `bml' = e(b)
 		mata: _b_ml = st_matrix("`bml'")
@@ -226,11 +258,25 @@ local nwu = r(nw)
 		local uhetall `r(varlist)'		
 		local nz: word count `uhetall'
 		*/
-	    local nx: word count `xvars' `wxvars2'
-		local nz: word count `uhet'		
-		if("`noconstant'"=="") local noconstant constant
-		mata:_te_order=xtsfspu_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
-   }	
+	    //local nx: word count `xvars' `wxvars2'
+		//local nz: word count `uhet'		
+		//if("`noconstant'"=="") local noconstant constant
+		//mata:_te_order=xtsfspu_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
+		//mata:spte(.,.,`T',_te_order,htildeut=.)
+		tempname yyy xxx vvv zzx
+		data2mata `yyy' = `yvar'
+		data2mata `xxx' = `xvars' `wxvars2',`noconstant'
+		local nx = r(ncol)
+		data2mata `vvv' = `vhet'
+		local nv = r(ncol)
+		data2mata `zzz' = `uhet'
+		local nu = r(ncol)
+		mata: bx = _b_ml[1..`nx']
+		mata: bv = _b_ml[(`nx'+1)..(`nx'+`nv')]
+		mata: bu = _b_ml[(`nx'+`nv'+1)..(`nx'+`nv'+`nu')]
+		mata: _te_order = spte(`xxx',bx',`vvv',bv',`zzz',bu',`rho',`gamma',`tau',`yyy',`wy',`wv',`wu')
+   }
+	*/
 
   restore
   
@@ -245,12 +291,14 @@ local nwu = r(nw)
 
 	}
 
+	/*
    if(`"`te'"'!=""){
 		qui gen double `te' = .
 		label var `te' "technical efficiency"
 		mata: getdatafmata(_te_order,_order_0,"`te'")
 		cap mata mata drop  _te_order		
    }  
+	*/
    	if(`nummissing'>0){
 		di "      Missing values found"
 		di "      The regression sample recorded by variable __e_sample__"
@@ -275,6 +323,12 @@ program Replay
        */ d(exp(@)*(($rmax-$rmin)/(1+exp(@))^2))) 
 di "Note: Wu:_cons is the transformed parameters;"
 di "      tau is the origin metric in the spatial components."
+
+global diparmopt  diparm(Wu, label(tau) prob function($rmin/(1+exp(@))+$rmax*exp(@)/(1+exp(@))) d(exp(@)*(($rmax-$rmin)/(1+exp(@))^2)))
+
+global end1 "Note: Wu:_cons is the transformed parameters;"
+global end2 "      tau is the origin metric in the spatial components."
+
 end
 ////////////////////////
 //////utility comands and function for spxtsfa////
@@ -432,7 +486,293 @@ program define issorted
 
 end
 
+
+///////
+capture program drop data2mata
+program define data2mata,rclass
+version 16
+
+gettoken mname 0: 0, p(=)
+gettoken eq 0:0 
+
+if "`0'"==""{
+	mata: `mname' = 1
+	return scalar ncol = 1
+	exit
+}
+
+syntax varlist(min=1) [if] [in], [NOConstant] 
+marksample touse
+
+mata: `mname' = st_data(., `"`varlist'"', "`touse'")
+if "`noconstant'"==""{
+	mata: `mname' = `mname', J(rows(`mname'),1,1)
+}
+mata: st_numscalar("r(nc)",cols(`mname'))
+return scalar ncol = r(nc)
+
+
+end
+
 // -------------------------------------------------------------------------------------------------
 
+cap mata mata drop spte()
+cap mata mata drop sphut()
+mata:
+/*
+void function spte(transmorphic matrix w,
+                    real scalar rho,
+				    real scalar T,
+					real colvector te_order,
+					real colvector htildeut)
+{
+	external real colvector _pan_tvar
+	external real colvector _pan_tvar
+	info = panelsetup(_pan_tvar,1)
+	if (rho==.){
+		htildeut = ln(te_order)
+	}
+	else{
+		keys = asarray_keys(w)
+		htildeut = J(0,1,.)
+		if (length(keys)==1){
+			wt = asarray(w,1)
+			irhow = matinv(I(rows(wt))-rho*wt)
+		}
+
+		for(t=1;t<=T;t++){
+
+			if(length(keys)>1){
+				wt = asarray(w,t)
+				irhow = matinv(I(rows(wt))-rho*wt)
+			}
+			htildeut = htildeut \ irhow*ln(panelsubmatrix(te_order,t,info))
+		}
+		te_order = exp(htildeut)
+	}
+
+}
+*/
+
+real colvector spte(real matrix xx, 
+					real colvector bx,
+					real matrix vv, 
+					real colvector bv,
+					real matrix uu, 
+					real colvector bu,
+					real scalar rho, 
+					real scalar gamma, 
+					real scalar tau,
+					real colvector y ,
+					transmorphic matrix wy,
+					transmorphic matrix wv,
+				    transmorphic matrix wu)
+			                              
+{
+	
+external real scalar _cost
+//external real colvector _pan_tvar
+external real matrix info
+//info = panelsetup(_pan_tvar,1)
+//external transmorphic matrix wy_ina
+//external transmorphic matrix wv_ina
+//external transmorphic matrix wu_ina
+nt = panelstats(info)[1]
+mu = 0
+esi = _cost*(y - xx*bx )
+if (vv==1){
+	sigv2 = exp(bv)
+}
+else{
+	sigv2 = exp(vv*bv)
+}
+hb = exp(0.5*uu*bu)
+//s2_u	= exp(b[nx+nz+2])	// scalar
+s2_u=1
+
+if(wy!=.){
+	wykeys = asarray_keys(wy)
+	lenwykeys = length(wykeys)
+}
+else{
+	lenwykeys = 0
+}
+if(wv!=.){
+	wvkeys = asarray_keys(wv)
+	lenwvkeys = length(wvkeys)
+}
+else{
+	lenwvkeys = 0
+}
+if(wu!=.){
+	wukeys = asarray_keys(wu)
+	lenwukeys = length(wukeys)
+}
+else{
+	lenwukeys = 0
+}
+lndetPi =.
+invPi =.
+if (lenwvkeys==1){
+	spwi = asarray(wv,1)
+	Mr = I(rows(spwi))-rho*spwi
+	iMr = matinv(Mr)
+	pifun(sigv2,Mr,iMr,lndetPi,invPi)
+}
+else{
+	Mr = 1
+	iMr = 1
+	pifun(sigv2,Mr,iMr,lndetPi,invPi)
+}
+if (lenwukeys==1){
+	spwi = asarray(wu,1)
+	Mtau = matinv(I(rows(spwi))-tau*spwi)
+}
+else{
+	Mtau = 1
+}
+
+if(lenwykeys==1){
+	wyi = asarray(wy,1)
+	Mrho = matinv(I(rows(wyi))-rho*wyi)
+}
+else{
+	Mrho = 1
+}
+
+Eie = J(0,1,.)
+for(i=1;i<=nt;i++){
+	N = info[i,2]-info[i,1]+1
+	if(lenwukeys>1){
+		spwi = extrpoi(asarray(wu,i))
+		Mtau = matinv(I(N)-tau*spwi)          
+	}
+	if(lenwvkeys>1){
+		spwi = extrpoi(asarray(wv,i))
+		Mr = matinv(I(N)-gamma*spwi)
+		iMr = matinv(Mr)
+		pifun(sigv2,Mr,iMr,lndetPi,invPi)
+	}
+
+	tvpifun(sigv2,Mr,iMr,lndetPi,invPi)
+
+	hbi	= Mtau*panelsubmatrix(hb, i, info)
+	hinvPi = quadcross(hbi,invPi)
+	hinvPihi = quadcross(hinvPi',hbi)
+	esinvPi = quadcross(esi,invPi)
+	s2_s = 1/(hinvPihi+1/s2_u)
+	us = (mu/s2_u - quadcross(esinvPi',hbi))*s2_s
+	htildeuts = hbi*(us+sqrt(s2_s)*normalden(us/sqrt(s2_s))/normal(us/sqrt(s2_s)))	
+   if(lenwykeys>1){
+		wyi = asarray(wy,i)
+		Mrho = matinv(I(N)-rho*wyi)
+	}
+	htildeuts = Mrho*htildeuts
+	Eie = Eie \ htildeuts
+}
+
+return(exp(-Eie))
+	
+}
 
 
+// compute the estimate h(z*dela)*E(u_t^*|e_t*) for h(z*dela)*u_t^*
+real colvector sphut(real matrix xx, 
+					real colvector bx,
+					real matrix vv, 
+					real colvector bv,
+					real matrix uu, 
+					real colvector bu,
+					real scalar rho, 
+					real scalar gamma, 
+					real scalar tau,
+					real colvector y ,
+					transmorphic matrix wv,
+					transmorphic matrix wu)
+						  
+{
+
+external real scalar _cost
+//external real colvector _pan_tvar
+external real matrix info
+//info = panelsetup(_pan_tvar,1)
+//external transmorphic matrix wy_ina
+//external transmorphic matrix wv_ina
+//external transmorphic matrix wu_ina
+nt = panelstats(info)[1]
+mu = 0
+esi = _cost*(y - xx*bx )
+if (vv==1){
+	sigv2 = exp(bv)
+}
+else{
+	sigv2 = exp(vv*bv)
+}
+hb = exp(0.5*uu*bu)
+//s2_u	= exp(b[nx+nz+2])	// scalar
+s2_u=1
+
+if(wv!=.){
+	wvkeys = asarray_keys(wv)
+	lenwvkeys = length(wvkeys)
+}
+else{
+	lenwvkeys = 0
+}
+if(wu!=.){
+	wukeys = asarray_keys(wu)
+	lenwukeys = length(wukeys)
+}
+else{
+	lenwukeys = 0
+}
+lndetPi =.
+invPi =.
+if (lenwvkeys==1){
+	spwi = asarray(wv,1)
+	Mr = I(rows(spwi))-rho*spwi
+	iMr = matinv(Mr)
+	pifun(sigv2,Mr,iMr,lndetPi,invPi)
+}
+else{
+	Mr = 1
+	iMr = 1
+	pifun(sigv2,Mr,iMr,lndetPi,invPi)
+}
+if (lenwukeys==1){
+	spwi = asarray(wu,1)
+	Mtau = matinv(I(rows(spwi))-tau*spwi)
+}
+else{
+	Mtau = 1
+}
+Eie = J(0,1,.)
+for(i=1;i<=nt;i++){
+	N = info[i,2]-info[i,1]+1
+	if(lenwukeys>1){
+		spwi = extrpoi(asarray(wu,i))
+		Mtau = matinv(I(N)-tau*spwi)          
+	}
+	if(lenwvkeys>1){
+		spwi = extrpoi(asarray(wv,i))
+		Mr = matinv(I(N)-gamma*spwi)
+		iMr = matinv(Mr)
+		pifun(sigv2,Mr,iMr,lndetPi,invPi)
+	}
+	tvpifun(sigv2,Mr,iMr,lndetPi,invPi)
+	hbi0 = panelsubmatrix(hb, i, info)
+	hbi	= Mtau*hbi0
+	hinvPi = quadcross(hbi,invPi)
+	hinvPihi = quadcross(hinvPi',hbi)
+	esinvPi = quadcross(esi,invPi)
+	s2_s = 1/(hinvPihi+1/s2_u)
+	us = (mu/s2_u - quadcross(esinvPi',hbi))*s2_s
+	htildeuts = hbi0*(us+sqrt(s2_s)*normalden(us/sqrt(s2_s))/normal(us/sqrt(s2_s)))	
+	Eie = Eie \ htildeuts
+}
+
+return(Eie)
+
+}
+
+end

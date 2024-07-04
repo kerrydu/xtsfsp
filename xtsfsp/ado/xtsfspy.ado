@@ -5,14 +5,14 @@ capture program drop xtsfspy
 program define xtsfspy, eclass sortpreserve
 version 16
 
-	if replay() {
-		if (`"`e(cmd)'"' != "xtsfspy") error 301
-		Replay `0'
-	}
-	else	Estimate `0'
-end
+// 	if replay() {
+// 		if (`"`e(cmd)'"' != "xtsfspy") error 301
+// 		Replay `0'
+// 	}
+// 	else	Estimate `0'
+// end
 
-program Estimate, eclass sortpreserve
+// program Estimate, eclass sortpreserve
 
 syntax varlist,Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
                               te(name) GENWVARS mldisplay(string) ///
@@ -29,7 +29,10 @@ if ("`wxvars'"!="" & "`wx'"==""){
 	di as error "varlist is specified in wxvars(), but spmatrix is not specified in wx()"
 	exit 198
 }
-
+local varlist: list uniq varlist
+local uhet: list uniq uhet
+local vhet: list uniq vhet
+local wxvars: list uniq wxvars
 if ("`wxvars'"=="" & "`wx'"!=""){
 	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
 	di as error `"wx(`wx') must be combined with wxvars()"'
@@ -207,28 +210,51 @@ local nwy = r(nw)
 	local mlmaxopt: list uniq mlmaxopt
    `nolog' ml max, `mlmaxopt' 
 
-   ereturn local cmd xtsfspy
+   ereturn local cmd xtsfsp
    ereturn local cmdbase ml
    ereturn local cmdline `cmdline'
    ereturn local wy w_ina 
    ereturn local wx `wxwx'
+   ereturn local wu .
+   ereturn local wv .
    ereturn local wxvars `wxvars'
    ereturn scalar T = `T'
    ereturn scalar rymin = $rmin
    ereturn scalar rymax = $rmax
+   ereturn scalar rumin = .
+   ereturn scalar rumax = .
+   ereturn scalar rvmin = .
+   ereturn scalar rvmax = .   
+   ereturn local ivar `id'
+   ereturn local tvar `time'
+   ereturn local depvar `yvar'
    ereturn local hasgenwvars `genwvars'
+   ereturn local xeq `xvars' `wxvars2', `noconstant'
+   ereturn local veq `vhet'
+   ereturn local ueq `uhet'
+ 
+   local rho = _b[Wy:_cons]
+   local rho = $rmin/(1+exp(`rho'))+$rmax*exp(`rho')/(1+exp(`rho'))
+   local gamma = .
+   local tau = .
+   ereturn scalar rho = `rho'
+   ereturn scalar gamma = .
+   ereturn scalar tau = .
+
    Replay , `diopts'
    if `"`wxvars'"'!="" di "      W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"
 
-   if(`"`te'"'!=""){
-		tempname bml
-		mat `bml' = e(b)
-		mata: _b_ml = st_matrix("`bml'")	
-	    local nx: word count `xvars' `wxvars2'
-		//local nz: word count `uhet'
-		if("`noconstant'"=="") local noconstant constant
-		mata:_te_order=xtsfspy_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
-   }	
+//    if(`"`te'"'!=""){
+// 		tempname bml
+// 		mat `bml' = e(b)
+// 		mata: _b_ml = st_matrix("`bml'")	
+// 	    local nx: word count `xvars' `wxvars2'
+// 		//local nz: word count `uhet'
+// 		if("`noconstant'"=="") local noconstant constant
+// 		mata:_te_order=xtsfspy_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
+// 		mata: rho = $rmin/(1+exp(_b[Wy:_cons]))+$rmax*exp(_b[Wy:_cons])/(1+exp(_b[Wy:_cons]))	
+// 		mata:spte(w_ina,rho,`T',_te_order,htildeut=.)
+//    }	
 
   restore
   
@@ -245,16 +271,17 @@ local nwy = r(nw)
 
 	if("`genwvars'"!=""){
 		qui gen double W_`yvar' = .
+		label var W_`yvar' "W*`yvar'"
 		mata: getdatafmata(_order_wyvar,_order_0,"W_`yvar'")
 		cap mata mata drop  _order_wyvar
 	  }	
 
-   if(`"`te'"'!=""){
-		qui gen double `te' = .
-		label var `te' "technical efficiency"
-		mata: getdatafmata(_te_order,_order_0,"`te'")
-		cap mata mata drop  _te_order		
-   }  	
+//    if(`"`te'"'!=""){
+// 		qui gen double `te' = .
+// 		label var `te' "technical efficiency"
+// 		mata: getdatafmata(_te_order,_order_0,"`te'")
+// 		cap mata mata drop  _te_order		
+//    }  	
    	if(`nummissing'>0){
 		di "      Missing values found"
 		di "      The regression sample recorded by variable __e_sample__"
@@ -277,7 +304,10 @@ program Replay
 		diparm(Wy, label(rho) prob function($rmin/(1+exp(@))+$rmax*exp(@)/(1+exp(@))) /*
        */ d(exp(@)*(($rmax-$rmin)/(1+exp(@))^2)))  
 	di "Note: Wy:_cons is the tranfromed parameters;" 
-	di "      rho is the origin metric in spatial components."		   
+	di "      rho is the origin metric in spatial components."	
+	global diparmopt diparm(Wy, label(rho) prob function($rmin/(1+exp(@))+$rmax*exp(@)/(1+exp(@)))  d(exp(@)*(($rmax-$rmin)/(1+exp(@))^2))) 
+	global end1 "Note: Wy:_cons is the tranfromed parameters;" 
+	global end2 "      rho is the origin metric in spatial components."	   
 end
 
 

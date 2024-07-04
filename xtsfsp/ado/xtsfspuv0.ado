@@ -4,14 +4,14 @@
 program define xtsfspuv0, eclass sortpreserve
 version 16
 
-	if replay() {
-		if (`"`e(cmd)'"' != "xtsfspuv0") error 301
-		Replay `0'
-	}
-	else	Estimate `0'
-end
+// 	if replay() {
+// 		if (`"`e(cmd)'"' != "xtsfspuv0") error 301
+// 		Replay `0'
+// 	}
+// 	else	Estimate `0'
+// end
 
-program Estimate, eclass sortpreserve
+// program Estimate, eclass sortpreserve
 
 
 syntax varlist,Uhet(string) [INItial(name) NOCONstant mldisplay(string) wxvars(varlist) ///
@@ -27,7 +27,10 @@ if ("`wxvars'"!="" & "`wx'"==""){
 	di as error "varlist is specified in wxvars(), but spmatrix is not specified in wx()"
 	exit 198
 }
-
+local varlist: list uniq varlist
+local uhet: list uniq uhet
+local vhet: list uniq vhet
+local wxvars: list uniq wxvars
 if ("`wxvars'"=="" & "`wx'"!=""){
 	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
 	di as error `"wx(`wx') must be combined with wxvars()"'
@@ -203,9 +206,10 @@ local nwu = r(nw)
    `nolog' ml max, `mlmaxopt' 
 
   //ereturn matrix b  = e(b)
-  ereturn local cmd xtsfspuv0
+  ereturn local cmd xtsfsp
   ereturn local cmdbase "ml"
   ereturn local cmdline `cmdline'
+  ereturn local wy .
   ereturn local wu w_ina 
   ereturn local wv w_ina
   ereturn local wx `wxwx'
@@ -215,11 +219,30 @@ local nwu = r(nw)
   ereturn scalar rumax = $rmax  
   ereturn scalar rvmin = $rmin
   ereturn scalar rvmax = $rmax  
+  ereturn scalar rymin = .
+  ereturn scalar rymax = . 
+  ereturn local ivar `id'
+  ereturn local tvar `time'
+  ereturn local depvar `yvar'
   ereturn local hasgenwvars `genwvars'
+  ereturn local xeq `xvars' `wxvars2', `noconstant'
+  ereturn local veq `vhet'
+  ereturn local ueq `uhet'
+
+  local tau = _b[Wu:_cons]
+  local tau = $rmin/(1+exp(`tau'))+$rmax*exp(`tau')/(1+exp(`tau'))
+  local gamma = _b[Wv:_cons]
+  local gamma = $rmin/(1+exp(`gamma'))+$rmax*exp(`gamma')/(1+exp(`gamma'))  
+  local rho = .
+ 
+  ereturn scalar rho = `rho'
+  ereturn scalar gamma = `gamma'
+  ereturn scalar tau = `tau'
+
    Replay , `diopts'
    if `"`wxvars'"'!="" di "      W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"  
 
-
+/*
    if(`"`te'"'!=""){
 		tempname bml
 		mat `bml' = e(b)
@@ -228,8 +251,9 @@ local nwu = r(nw)
 		//local nz: word count `uhet'
 		if("`noconstant'"=="") local noconstant constant
 		mata:_te_order=xtsfspuv0_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
+		mata:spte(.,.,`T',_te_order,htildeut=.)
    }	
-
+*/
   restore
   
   	if(`"`wxvars'"'!=""&"`genwvars'"!=""){
@@ -243,12 +267,12 @@ local nwu = r(nw)
 
 	}
 
-   if(`"`te'"'!=""){
-		qui gen double `te' = .
-		label var `te' "technical efficiency"
-		mata: getdatafmata(_te_order,_order_0,"`te'")
-		cap mata mata drop  _te_order		
-   }  	
+//    if(`"`te'"'!=""){
+// 		qui gen double `te' = .
+// 		label var `te' "technical efficiency"
+// 		mata: getdatafmata(_te_order,_order_0,"`te'")
+// 		cap mata mata drop  _te_order		
+//    }  	
    	if(`nummissing'>0){
 		di "      Missing values found"
 		di "      The regression sample recorded by variable __e_sample__"
@@ -275,6 +299,9 @@ program Replay
        */ d(exp(@)*(($rmax-$rmin)/(1+exp(@))^2)))
 	 di "Note: Wv:_cons and Wu:_cons are the transformed parameters"
 	 di "      gamma and tau are their origin metrics in spatial components, respectively."
+	 global diparmopt diparm(Wu, label(tau) prob function($rumin/(1+exp(@))+$rumax*exp(@)/(1+exp(@)))  d(exp(@)*(($rumax-$rumin)/(1+exp(@))^2))) diparm(Wv, label(gamma) prob function($rvmin/(1+exp(@))+$rvmax*exp(@)/(1+exp(@))) d(exp(@)*(($rvmax-$rvmin)/(1+exp(@))^2)))
+	 global end1 "Note: Wv:_cons and Wu:_cons are the transformed parameters;"
+	 global end2 "      gamma and tau are their origin metrics in spatial components, respectively."
 end
 
 //////////////////////

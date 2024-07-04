@@ -5,14 +5,14 @@ capture program drop xtsfspv
 program define xtsfspv, eclass sortpreserve
 version 16
 
-	if replay() {
-		if (`"`e(cmd)'"' != "xtsfspv") error 301
-		Replay `0'
-	}
-	else	Estimate `0'
-end
+// 	if replay() {
+// 		if (`"`e(cmd)'"' != "xtsfspv") error 301
+// 		Replay `0'
+// 	}
+// 	else	Estimate `0'
+// end
 
-program Estimate, eclass sortpreserve
+// program Estimate, eclass sortpreserve
 
 syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
                               wv(string)  te(name) mldisplay(string)  wx(string) wxvars(varlist) ///
@@ -27,7 +27,10 @@ if ("`wxvars'"!="" & "`wx'"==""){
 	di as error "varlist is specified in wxvars(), but spmatrix is not specified in wx()"
 	exit 198
 }
-
+local varlist: list uniq varlist
+local uhet: list uniq uhet
+local vhet: list uniq vhet
+local wxvars: list uniq wxvars
 if ("`wxvars'"=="" & "`wx'"!=""){
 	//di  `"varlist is not specified in wxvars(), wx(`wx') is neglected"'
 	di as error `"wx(`wx') must be combined with wxvars()"'
@@ -193,27 +196,51 @@ local nwu = r(nw)
 	local mlmaxopt: list uniq mlmaxopt
    `nolog' ml max, `mlmaxopt'  
 
-   ereturn local cmd xtsfspv
+   ereturn local cmd xtsfsp
    ereturn local cmdbase ml
    ereturn local cmdline `cmdline'
+   ereturn local wy .
+   ereturn local wu .
    ereturn local wv w_ina
    ereturn local wx `wxwx'
    ereturn local wxvars `wxvars'
    ereturn scalar T = `T'
    ereturn scalar rvmin = $rmin
    ereturn scalar rvmax = $rmax
-   ereturn local hasgenwvars `genwvars'
+   ereturn scalar rumin = .
+   ereturn scalar rumax = .
+   ereturn scalar rymin = .
+   ereturn scalar rymax = .     
+
+   ereturn local ivar `id'
+   ereturn local tvar `time'
+  ereturn local depvar `yvar'
+  ereturn local hasgenwvars `genwvars'
+  ereturn local xeq `xvars' `wxvars2', `noconstant'
+  ereturn local veq `vhet'
+  ereturn local ueq `uhet'
+
+   local tau = .
+   local gamma = _b[Wv:_cons]
+   local gamma = $rmin/(1+exp(`gamma'))+$rmax*exp(`gamma')/(1+exp(`gamma'))  
+   local rho = .
+  
+   ereturn scalar rho = `rho'
+   ereturn scalar gamma = `gamma'
+   ereturn scalar tau = `tau'
+
    Replay , `diopts'
    if `"`wxvars'"'!="" di "      W_(`wxvars') represent Spatial Durbin terms W(`wxvars')"
-   if(`"`te'"'!=""){
-		tempname bml
-		mat `bml' = e(b)
-		mata: _b_ml = st_matrix("`bml'")	
-	    local nx: word count `xvars' `wxvars2'
-		//local nz: word count `uhet'
-		if("`noconstant'"=="") local noconstant constant
-		mata:_te_order=xtsfspv_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
-   }	
+//    if(`"`te'"'!=""){
+// 		tempname bml
+// 		mat `bml' = e(b)
+// 		mata: _b_ml = st_matrix("`bml'")	
+// 	    local nx: word count `xvars' `wxvars2'
+// 		//local nz: word count `uhet'
+// 		if("`noconstant'"=="") local noconstant constant
+// 		mata:_te_order=xtsfspv_te(_b_ml,`nx',"`yvar'","`xvars' `wxvars2'","`uhet'","`vhet'","`noconstant'")
+// 		mata:spte(.,.,`T',_te_order,htildeut=.)
+//    }	
 
   restore
   
@@ -228,12 +255,12 @@ local nwu = r(nw)
 
 	}
 
-   if(`"`te'"'!=""){
-		qui gen double `te' = .
-		label var `te' "technical efficiency"
-		mata: getdatafmata(_te_order,_order_0,"`te'")
-		cap mata mata drop  _te_order		
-   }  	
+//    if(`"`te'"'!=""){
+// 		qui gen double `te' = .
+// 		label var `te' "technical efficiency"
+// 		mata: getdatafmata(_te_order,_order_0,"`te'")
+// 		cap mata mata drop  _te_order		
+//    }  	
    	if(`nummissing'>0){
 		di "      Missing values found"
 		di "      The regression sample recorded by variable __e_sample__"
@@ -259,6 +286,9 @@ program Replay
        */ d(exp(@)*(($rmax-$rmin)/(1+exp(@))^2))) 
 		di "Note: Wv:_cons is the transformed parameters;" 
 		di "      gamma is their origin metric in spatial components."
+		global diparmopt diparm(Wv, label(gamma) prob function($rmin/(1+exp(@))+$rmax*exp(@)/(1+exp(@)))  d(exp(@)*(($rmax-$rmin)/(1+exp(@))^2))) 
+		global end1 "Note: Wv:_cons is the transformed parameters;" 
+		global end2 "      gamma is their origin metric in spatial components."
 end
 
 ///////////////////////

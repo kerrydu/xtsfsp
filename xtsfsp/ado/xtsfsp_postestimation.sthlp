@@ -1,0 +1,141 @@
+{smcl}
+{* *! version 1.0.0  10mar2015}{...}
+{* revised: }{...}
+{cmd:help xtsfsp postestimation}{right:also see: {help xtsfsp}}
+{hline}
+
+{title:Title}
+
+{p2colset 5 32 38 2}{...}
+{p2col :{hi:xtsfsp postestimation} {hline 2}}Postestimation tools for xtsfsp{p_end}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd}
+The following postestimation commands are available for {cmd:xtsfsp}.
+
+{synoptset 13}{...}
+{p2coldent :command}description{p_end}
+{synoptline}
+{synopt:{bf:{help estat}}}AIC, BIC, VCE, and estimation sample summary{p_end}
+INCLUDE help post_estimates
+INCLUDE help post_lincom
+INCLUDE help post_lrtest
+INCLUDE help post_nlcom
+{synopt :{helpb sfsd postestimation##predict:predict}}predictions, residuals, influence statistics, and other diagnostic measures{p_end}
+INCLUDE help post_predictnl
+INCLUDE help post_test
+INCLUDE help post_testnl
+{synoptline}
+{p2colreset}{...}
+
+
+{marker predict}{...}
+{title:Syntax for predict}
+
+{p 8 16 2}{cmd:xtsfsp_p} {newvar} {ifin} [{cmd:,} {it:statistic}]
+
+{synoptset 15 tabbed}{...}
+{synopthdr :statistic}
+{synoptline}
+{syntab:Main}
+{synopt :{opt xb}} prediction of the dependent variable; the default{p_end}
+{synopt :{opt residuals}}estimates of residuals (depvar - xb) {p_end}
+{synopt :{opt u}}estimates of (technical or cost) inefficiency via {it:E}(u|e) (Orea and Álvarez, 2019){p_end}
+{synopt :{opt su}}estimates of spatial corrected inefficiency:[I-rho*W]^{-1}u{p_end}
+{synopt :{opt te}}estimates of (technical or cost) efficiency via exp[-E(u|e)]{p_end}{p_end}
+{synopt :{opt ste}}estimates of spatial corrected efficiency{p_end}
+{synopt :{opt uts}}estimates of commen inefficency u*_t{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+These statistics are only available for the estimation sample.
+
+
+INCLUDE help menu_predict
+
+
+{title:Options for predict}
+
+{dlgtab:Main}
+
+{phang}
+{opt xb}, the default, calculates the linear prediction.
+
+{phang}
+{opt residuals} calculates the composite residuals (depvar - xb).
+
+
+{phang}
+{opt u} produces estimates of (technical or cost) inefficiency via E(u|e) using the Orea and Álvarez (2019) estimator. 
+
+{phang}
+{opt su} produces spatial corrrected inefficiency for models with 
+the spatial lag term. It is estimated by [I-rho*W]^{-1}E(u_t|e_t).
+ 
+{phang}
+{opt te} produces estimates of (technical or cost) efficiency via exp(-E(u|e)). 
+
+{phang}
+{opt ste} produces estimates of spatial corrected efficiency via  exp(-E(su|e)).
+
+{title:Remarks}
+
+{pstd} For the postestimation, the option {cmd:genwvars} should be specified in {cmd:xtsfsp} when estimating the models with spatial dependence. When the {cmd:sdsf} command is used to estimate 
+production frontiers, {cmd:xtsfsp_p} will provide the post-estimation of technical (in)efficiency, 
+while when the {cmd:xtsfsp} command is used to estimate cost frontiers, {cmd:xtsfsp_p} will provide the post-estimation of cost (in)efficiency{p_end}
+
+
+
+    {marker examples}{...}
+    {title:Examples}
+    
+        {title:SD-SF model with time-constant spatial weight matrix}
+    
+    {pstd}
+    Setup{p_end}
+    {phang2}{bf:. {stata "mata mata matuse w_ex1,replace"}}{p_end}
+    {phang2}{bf:. {stata "use sdsfbc_ex1.dta"}}{p_end}
+    
+    {pstd}
+    Stochastic Durbin production model {p_end}
+    {phang2}{bf:. {stata "sfsd y x, id(id) time(t) noconstant wmat(wm,mata) mu(z) wxvars(x) wmuvars(z) genwvars "}}{p_end}
+    {phang2}{bf:. {stata "predict uhat,u"}}{p_end}
+    {phang2}{bf:. {stata "predict te,te"}}{p_end}
+    {phang2}{bf:. {stata "predict ste, ste"}}{p_end}
+    
+
+{marker author}{...}
+{title:Author}
+
+{pstd}
+Kerui Du{break}
+Xiamen University{break}
+School of Management{break}
+China{break}
+{browse "kerrydu@xmu.edu.cn":kerrydu@xmu.edu.cn}{break}
+
+
+{pstd}
+Federica Galli{break}
+University of Bologna{break}
+Department of Statistical Sciences “Paolo Fortunati”{break}
+Italy{break}
+{browse "federica.galli14@unibo.it":federica.galli14@unibo.it}{break}
+
+
+{pstd}
+Luojia Wang{break}
+Xiamen University{break}
+School of Management{break}
+China{break}
+
+
+
+{title:Also see}
+
+{psee}
+{space 2}Help:  {help xtsfsp}.
+{p_end}
