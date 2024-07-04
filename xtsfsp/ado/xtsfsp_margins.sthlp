@@ -76,7 +76,7 @@ Setup{p_end}
 
 {pstd}
 Stochastic production model with four different sources of spatial cross-sectional dependence {p_end}
-{phang2}{bf:. {stata "xtsfsp y x, uhet(z) wu(w1,mata) wy(w1,mata) wv(w1,mata) wx(w1,mata) wxvars(x) te(te)"}}{p_end}
+{phang2}{bf:. {stata "xtsfsp y x, uhet(z) wu(w1,mata) wy(w1,mata) wv(w1,mata) wx(w1,mata) wxvars(x) genwvars"}}{p_end}
 
 {phang2}{bf:. {stata "xtsfsp_margins z, reps(500)"}}{p_end}
 

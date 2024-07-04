@@ -88,24 +88,26 @@ production frontiers, {cmd:xtsfsp_p} will provide the post-estimation of technic
 while when the {cmd:xtsfsp} command is used to estimate cost frontiers, {cmd:xtsfsp_p} will provide the post-estimation of cost (in)efficiency{p_end}
 
 
+{marker examples}{...}
+{title:Examples}
 
-    {marker examples}{...}
-    {title:Examples}
+    {title:yxuv-SAR model with time-invariant spatial weight matrix}
+
+{pstd}
+Setup{p_end}
+{phang2}{bf:. {stata "mata mata matuse xtsfsp_w1,replace"}}{p_end}
+{phang2}{bf:. {stata "use xtsfsp_ex1.dta"}}{p_end}
+{phang2}{bf:. {stata "xtset id t"}}{p_end}
+
+{pstd}
+Stochastic production model with four different sources of spatial cross-sectional dependence {p_end}
+{phang2}{bf:. {stata "xtsfsp y x, uhet(z) wu(w1,mata) wy(w1,mata) wv(w1,mata) wx(w1,mata) wxvars(x) genwvars"}}{p_end}
+
+{phang2}{bf:. {stata "xtsfsp_p uhat, u"}}{p_end}
+
+{phang2}{bf:. {stata "xtsfsp_p te, te"}}{p_end}
     
-        {title:SD-SF model with time-constant spatial weight matrix}
-    
-    {pstd}
-    Setup{p_end}
-    {phang2}{bf:. {stata "mata mata matuse w_ex1,replace"}}{p_end}
-    {phang2}{bf:. {stata "use sdsfbc_ex1.dta"}}{p_end}
-    
-    {pstd}
-    Stochastic Durbin production model {p_end}
-    {phang2}{bf:. {stata "sfsd y x, id(id) time(t) noconstant wmat(wm,mata) mu(z) wxvars(x) wmuvars(z) genwvars "}}{p_end}
-    {phang2}{bf:. {stata "predict uhat,u"}}{p_end}
-    {phang2}{bf:. {stata "predict te,te"}}{p_end}
-    {phang2}{bf:. {stata "predict ste, ste"}}{p_end}
-    
+
 
 {marker author}{...}
 {title:Author}
@@ -116,21 +118,6 @@ Xiamen University{break}
 School of Management{break}
 China{break}
 {browse "kerrydu@xmu.edu.cn":kerrydu@xmu.edu.cn}{break}
-
-
-{pstd}
-Federica Galli{break}
-University of Bologna{break}
-Department of Statistical Sciences “Paolo Fortunati”{break}
-Italy{break}
-{browse "federica.galli14@unibo.it":federica.galli14@unibo.it}{break}
-
-
-{pstd}
-Luojia Wang{break}
-Xiamen University{break}
-School of Management{break}
-China{break}
 
 
 
