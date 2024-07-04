@@ -174,7 +174,8 @@ if `"`ccomu'"'!=""{
         mata: uts = st_data(., "`uts'")
         mata: `yyy' = st_data(.,"`yvar'")
         data2mata `xxx' = `xeq'
-        data2mata `vvv' = `veq'
+        if(`"`veq'"'=="") local veq = 1
+        else data2mata `vvv' = `veq'
         if(`rho'==0){
             local wyvar = 1
         }
