@@ -8,7 +8,9 @@ d
 f xtsfsp.ado 
 f xtsfsp.sthlp 
 f xtsfsp_margins.ado 
-f xtsfsp_margins.sthlp 
+f xtsfsp_margins.sthlp
+f xtsfsp_p.ado 
+f xtsfsp_postestimation.sthlp  
 f lxtsfsp.mlib 
 f xtsfspy.ado 
 f xtsfspyu.ado 
