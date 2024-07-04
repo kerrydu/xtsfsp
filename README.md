@@ -17,9 +17,11 @@ The materials posted in this repository are accepted in Stata Journal
  ```
  ** install from github
  net install xtsfsp, from("https://raw.githubusercontent.com/kerrydu/xtsfsp/main/xtsfsp/ado") replace
+ net get xtsfsp, from("https://raw.githubusercontent.com/kerrydu/xtsfsp/main/xtsfsp/ado") replace
  
  **install from gitee
  net install xtsfsp, from("https://gitee.com/kerrydu/xtsfsp/main/xtsfsp/ado") replace
+ net get xtsfsp, from("https://gitee.com/kerrydu/xtsfsp/main/xtsfsp/ado") replace
  ```
 
 
