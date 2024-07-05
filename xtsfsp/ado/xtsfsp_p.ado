@@ -44,7 +44,9 @@ if(usubinstr("`hasgenwvars'"," ","",.)==""){
 tempvar yhat vhet uhet ehat sigmav2 ht
 
 qui _predict double `yhat', xb eq(#1)
-if `"`rho'"'!="" qui replace `yhat' = `yhat' + `rho'*W_`depvar'
+if (`"`rho'"'!="" & `"`rho'"'!="." & `"`rho'"'!="0"){
+	qui replace `yhat' = `yhat' + `rho'*W_`depvar'
+}  
 if "`xb'"!=""{
     qui gen double `varlist' = `yhat'
     label var `varlist' "prediction of `depvar'"

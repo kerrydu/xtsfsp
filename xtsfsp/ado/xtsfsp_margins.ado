@@ -176,7 +176,7 @@ if `"`ccomu'"'!=""{
         data2mata `xxx' = `xeq'
         if(`"`veq'"'=="") local veq = 1
         else data2mata `vvv' = `veq'
-        if(`rho'==0){
+        if(`rho'==0 | `rho'==.){
             local wyvar = 1
         }
         else{
