@@ -36,16 +36,6 @@ if("`version'"!=""){
 }
 
 	if replay() {
-		// if      (`"`e(cmd)'"' == "xtsfspyuv")  xtsfspyuv   `0'
-		// else if (`"`e(cmd)'"' == "xtsfspyuv0") xtsfspyuv0  `0'
-		// else if (`"`e(cmd)'"' == "xtsfspyu")   xtsfspyu    `0'
-		// else if (`"`e(cmd)'"' == "xtsfspyv")   xtsfspyv    `0'
-		// else if (`"`e(cmd)'"' == "xtsfspy")    xtsfspy     `0'
-		// else if (`"`e(cmd)'"' == "xtsfspu")    xtsfspu     `0'
-		// else if (`"`e(cmd)'"' == "xtsfspv")    xtsfspv     `0'
-		// else if (`"`e(cmd)'"' == "xtsfspuv")   xtsfspuv    `0'
-		// else if (`"`e(cmd)'"' == "xtsfspuv0")  xtsfspuv0   `0'
-		// else error 301
 		if  (`"`e(cmd)'"' == "xtsfsp") Replay `0'
 		else error 301
 	}
@@ -60,7 +50,8 @@ if _rc ssc install moremata
 
 qui mata mata mlib index
 
-syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) wu(string) wv(string) ///
+syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
+	                          wu(string) wv(string) genwxvars ///
                               te(name)  mldisplay(string) ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) level(real 95) COST wxvars(varlist) ///
 							  MLSEarch(string) MLMAXopt(string) DELVE CONSTraints(string) wy(string) wx(string) ///
@@ -70,6 +61,7 @@ syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) wu(stri
 global diparmopt
 global end1 
 global end2
+if "`genwxvars" !="" local genwvars genwxvars
 if "`genwvars'"!="" & `"`wxvars'"'!=""{
 	foreach v in `wxvars'{
 		confirm new var W_`v'
