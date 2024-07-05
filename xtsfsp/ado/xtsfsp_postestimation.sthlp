@@ -33,7 +33,7 @@ INCLUDE help post_testnl
 
 
 {marker predict}{...}
-{title:Syntax for predict}
+{title:Syntax for xtsfsp_p}
 
 {p 8 16 2}{cmd:xtsfsp_p} {newvar} {ifin} [{cmd:,} {it:statistic}]
 
@@ -45,7 +45,7 @@ INCLUDE help post_testnl
 {synopt :{opt residuals}}estimates of residuals (depvar - xb) {p_end}
 {synopt :{opt u}}estimates of (technical or cost) inefficiency via {it:E}(u|e) (Orea and Álvarez, 2019){p_end}
 {synopt :{opt su}}estimates of spatial corrected inefficiency:[I-rho*W]^{-1}u{p_end}
-{synopt :{opt te}}estimates of (technical or cost) efficiency via exp[-E(u|e)]{p_end}{p_end}
+{synopt :{opt te}}estimates of (technical or cost) efficiency via exp[-E(u|e)]{p_end}
 {synopt :{opt ste}}estimates of spatial corrected efficiency{p_end}
 {synopt :{opt uts}}estimates of commen inefficency u*_t{p_end}
 {synoptline}
@@ -54,10 +54,9 @@ INCLUDE help post_testnl
 These statistics are only available for the estimation sample.
 
 
-INCLUDE help menu_predict
 
 
-{title:Options for predict}
+{title:Options for xtsfsp_p}
 
 {dlgtab:Main}
 
@@ -83,9 +82,7 @@ the spatial lag term. It is estimated by [I-rho*W]^{-1}E(u_t|e_t).
 
 {title:Remarks}
 
-{pstd} For the postestimation, the option {cmd:genwvars} should be specified in {cmd:xtsfsp} when estimating the models with spatial dependence. When the {cmd:sdsf} command is used to estimate 
-production frontiers, {cmd:xtsfsp_p} will provide the post-estimation of technical (in)efficiency, 
-while when the {cmd:xtsfsp} command is used to estimate cost frontiers, {cmd:xtsfsp_p} will provide the post-estimation of cost (in)efficiency{p_end}
+{pstd} For the postestimation, the option {cmd:genwvars} should be specified in {cmd:xtsfsp} when estimating the models.{p_end}
 
 
 {marker examples}{...}
@@ -124,5 +121,5 @@ China{break}
 {title:Also see}
 
 {psee}
-{space 2}Help:  {help xtsfsp}.
+{space 2}Help:  {help xtsfsp} {help xtsfsp margins}.
 {p_end}

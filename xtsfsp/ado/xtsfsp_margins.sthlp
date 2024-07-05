@@ -63,6 +63,10 @@ for estimating the standard errors. The default is 200.
 {phang}
 {cmd: nodots} suppress iteration dots.
 
+{title:Remarks}
+
+{pstd} For the postestimation, the option {cmd:genwvars} should be specified in {cmd:xtsfsp} when estimating the models.
+
 {marker examples}{...}
 {title:Examples}
 
@@ -176,6 +180,4 @@ Spain{break}
 {marker see}{...}
 {title:Also see}
 
-{p 7 14 2}{manhelp frontier R}, 
-{manhelp xtfrontier XT}{p_end} 
-{p 7 14 2}{helpb xtsfsp}, {helpb sfkk},  {helpb nwxtregress} (if installed)
+{p 7 14 2}{helpb xtsfsp}, {helpb xtsfsp postestimation} 

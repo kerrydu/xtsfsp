@@ -1,5 +1,5 @@
 {smcl}
-{cmd:help xtsfsp}{right:also see:  {help xtsfsp postestimation}}
+{cmd:help xtsfsp}{right:also see:  {help xtsfsp postestimation} {help xtsfsp margins}}
 {hline}
 
 {title:Title}
@@ -79,7 +79,7 @@ A panel variable and a time variable must be specified; use xtset. {p_end}
 {synoptline}
 {p2colreset}{...}
 {p 4 6 2}
-See {help xtsfsp postestimation} and {help xtsfsp margins}for
+See {help xtsfsp postestimation} and {help xtsfsp margins} for
 features available after estimation.{p_end}
 
 {marker description}{...}
