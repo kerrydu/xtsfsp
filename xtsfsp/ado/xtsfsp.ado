@@ -62,7 +62,7 @@ global diparmopt
 global end1 
 global end2
 if "`genwxvars" !="" {
-	di as "warning: genwxvars was replaced by genwvars, see help xtsfsp"
+	di  "warning: genwxvars was replaced by genwvars, see help xtsfsp"
 }
 if "`genwvars'"!="" & `"`wxvars'"'!=""{
 	foreach v in `wxvars'{
@@ -72,7 +72,7 @@ if "`genwvars'"!="" & `"`wxvars'"'!=""{
 }
 
 if `"`te'"'!=""{
-	di as "warning: te() was deleted, use xtsfsp_p instead. see help xtsfsp_postestimation."
+	di "warning: te() was deleted, use xtsfsp_p instead. see help xtsfsp_postestimation."
 }
 ** check the options regarding the spatial weight matirxs
 if ("`wy'"=="" & "`wu'"=="" & "`wv'"==""){
