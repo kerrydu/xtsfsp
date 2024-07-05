@@ -263,6 +263,8 @@ local nwu = r(nw)
    ereturn local wv .
    ereturn local wx `wxwx'
    ereturn local wxvars `wxvars'
+   ereturn local  predict  "xtsfsp_p"
+   ereturn local  margins  "xtsfsp_margins"
    ereturn scalar T = `T'
    ereturn scalar rumin = $rumin
    ereturn scalar rumax = $rumax

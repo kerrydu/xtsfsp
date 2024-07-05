@@ -236,6 +236,8 @@ local nwu = r(nw)
    ereturn local veq `vhet'
    ereturn local ueq `uhet'
    ereturn local hasgenwvars `genwvars'
+   ereturn local  predict  "xtsfsp_p"
+   ereturn local  margins  "xtsfsp_margins"   
    ereturn scalar T = `T'
    ereturn scalar rumin = $rmin
    ereturn scalar rumax = $rmax

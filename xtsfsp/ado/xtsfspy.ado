@@ -233,7 +233,8 @@ local nwy = r(nw)
    ereturn local xeq `xvars' `wxvars2', `noconstant'
    ereturn local veq `vhet'
    ereturn local ueq `uhet'
- 
+   ereturn local  predict  "xtsfsp_p"
+   ereturn local  margins  "xtsfsp_margins" 
    local rho = _b[Wy:_cons]
    local rho = $rmin/(1+exp(`rho'))+$rmax*exp(`rho')/(1+exp(`rho'))
    local gamma = .

@@ -204,6 +204,8 @@ local nwu = r(nw)
    ereturn scalar rymin = .
    ereturn scalar rymax = .     
 
+   ereturn local  predict  "xtsfsp_p"
+   ereturn local  margins  "xtsfsp_margins"
    ereturn local ivar `id'
    ereturn local tvar `time'
   ereturn local depvar `yvar'

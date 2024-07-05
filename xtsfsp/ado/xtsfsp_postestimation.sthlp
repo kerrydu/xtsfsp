@@ -35,7 +35,7 @@ INCLUDE help post_testnl
 {marker predict}{...}
 {title:Syntax for predict}
 
-{p 8 16 2}{cmd:xtsfsp_p} {newvar} {ifin} [{cmd:,} {it:statistic}]
+{p 8 16 2}{cmd:predict} {newvar} {ifin} [{cmd:,} {it:statistic}]
 
 {synoptset 15 tabbed}{...}
 {synopthdr :statistic}
@@ -100,9 +100,9 @@ Setup{p_end}
 Stochastic production model with four different sources of spatial cross-sectional dependence {p_end}
 {phang2}{bf:. {stata "xtsfsp y x, uhet(z) wu(w1,mata) wy(w1,mata) wv(w1,mata) wx(w1,mata) wxvars(x) genwvars"}}{p_end}
 
-{phang2}{bf:. {stata "xtsfsp_p uhat, u"}}{p_end}
+{phang2}{bf:. {stata "predict uhat, u"}}{p_end}
 
-{phang2}{bf:. {stata "xtsfsp_p te, te"}}{p_end}
+{phang2}{bf:. {stata "predict te, te"}}{p_end}
     
 
 

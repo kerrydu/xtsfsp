@@ -222,7 +222,8 @@ local nwu = r(nw)
    ereturn local veq `vhet'
    ereturn local ueq `uhet'
    ereturn local depvar `yvar'
-
+   ereturn local  predict  "xtsfsp_p"
+   ereturn local  margins  "xtsfsp_margins"
    local tau = _b[Wu:_cons]
    local tau = $rmin/(1+exp(`tau'))+$rmax*exp(`tau')/(1+exp(`tau'))
    local gamma = .

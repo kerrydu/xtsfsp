@@ -130,12 +130,12 @@ if ("`wy'"!="" & "`wu'"=="" & "`wv'"==""){
 }
 ** case 2, wy wu
 if ("`wy'"!="" & "`wu'"!="" & "`wv'"==""){
-	xtsfspyu `0'
+	xtsfspyu `0'	
 	exit
 }
 ** case 3, wy  wv
 if ("`wy'"!="" & "`wu'"=="" & "`wv'"!=""){
-	xtsfspyv `0'
+	xtsfspyv `0'	
 	exit
 }
 ** case 4, wu=wv
@@ -145,7 +145,7 @@ if ("`wy'"=="" & ("`wu'"!="" & "`wv'"=="`wu'")){
 }
 ** case 5, wu,wv
 if ("`wy'"=="" & ("`wu'"!="" & "`wv'"!="")){
-	xtsfspuv `0'
+	xtsfspuv `0'	
 	exit
 }
 ** case 6, wu
@@ -155,7 +155,7 @@ if ("`wy'"=="" & ("`wu'"!="" & "`wv'"=="")){
 }
 ** case 7, wv
 if ("`wy'"=="" & ("`wu'"=="" & "`wv'"!="")){
-	xtsfspv `0'
+	xtsfspv `0'	
 	exit
 }
 
