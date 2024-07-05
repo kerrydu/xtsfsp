@@ -66,7 +66,6 @@ to suppress constant term{p_end}
 {syntab :Reporting}
 {synopt :{cmd:nolog}}omit the display of the criterion function iteration log{p_end}
 {synopt :{cmdab:mldis:play(}{it:{help ml##display_options:display_options}}{cmd:)}}control {cmd:ml display} options; seldom used{p_end}
-{synopt :{cmd:te(}{it:{help newvar:effvar}}{cmd:)}}create efficiency variables{p_end}
 {synopt :{opt genwvars}}generate the spatial Durbin terms (WX) and spatial lag indepvar (WY){p_end}
 
 {syntab :Other}
@@ -186,10 +185,6 @@ Order is iterations, maxorder. lndetmc(50 100) is recommended.
 {cmd:ml display} options; it is seldom used.
 
 {phang}
-{cmd:te(}{it:{help newvar:effvar}}{cmd:)} generates
-the production or cost efficiency variable.
-
-{phang}
 {cmd:genwvars} generates the spatial Durbin terms (WX) and spatial lag indepvar (WY). 
 The option automatically extends any specified variable name in wxvars() 
 and the independent variable with W_ prefix. It is require for the postestimation.
@@ -233,7 +228,7 @@ Setup{p_end}
 
 {pstd}
 Stochastic production model with four different sources of spatial cross-sectional dependence {p_end}
-{phang2}{bf:. {stata "xtsfsp y x, uhet(z) wu(w1,mata) wy(w1,mata) wv(w1,mata) wx(w1,mata) wxvars(x) te(te)"}}{p_end}
+{phang2}{bf:. {stata "xtsfsp y x, uhet(z) wu(w1,mata) wy(w1,mata) wv(w1,mata) wx(w1,mata) wxvars(x)"}}{p_end}
 
   
     {title:xuv-SAR model with different spatial weight matrixs}
