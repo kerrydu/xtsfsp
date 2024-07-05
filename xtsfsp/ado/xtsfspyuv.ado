@@ -2,7 +2,7 @@
 * subprogram for xtsfsp 
 * Case9: y=rhoWy+x+v-u; v=[I-gammaW]^{-1}v*; u=[I-tauW]^{-1}u*
 capture program drop xtsfspyuv
-program define xtsfspyuv
+program define xtsfspyuv, eclass sortpreserve
 version 16
 
 // 	if replay() {

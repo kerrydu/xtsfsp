@@ -4,15 +4,6 @@
 program define xtsfspuv0, eclass sortpreserve
 version 16
 
-// 	if replay() {
-// 		if (`"`e(cmd)'"' != "xtsfspuv0") error 301
-// 		Replay `0'
-// 	}
-// 	else	Estimate `0'
-// end
-
-// program Estimate, eclass sortpreserve
-
 
 syntax varlist,Uhet(string) [INItial(name) NOCONstant mldisplay(string) wxvars(varlist) ///
                               NORMalize(string) wu(string) wv(string) wx(string) genwxvars ///

@@ -2,16 +2,7 @@
 * subprogram for xtsfsp 
 * Case5: y=x+v-u; u=[I-tauW]^{-1}u*, v=[I-gammaW]^{-1}v*
 program define xtsfspuv, eclass sortpreserve
-version 16
 
-// 	if replay() {
-// 		if (`"`e(cmd)'"' != "xtsfspuv") error 301
-// 		Replay `0'
-// 	}
-// 	else	Estimate `0'
-// end
-
-program Estimate, eclass sortpreserve
 version 16
 syntax varlist,Uhet(string) [INItial(name) NOCONstant NORMalize(string) genwxvars ///
                               wu(string) wv(string) mldisplay(string) wx(string) wxvars(varlist) ///

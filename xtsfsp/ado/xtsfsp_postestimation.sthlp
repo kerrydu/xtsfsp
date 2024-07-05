@@ -33,7 +33,7 @@ INCLUDE help post_testnl
 
 
 {marker predict}{...}
-{title:Syntax for xtsfsp_p}
+{title:Syntax for predict}
 
 {p 8 16 2}{cmd:xtsfsp_p} {newvar} {ifin} [{cmd:,} {it:statistic}]
 
@@ -56,7 +56,7 @@ These statistics are only available for the estimation sample.
 
 
 
-{title:Options for xtsfsp_p}
+{title:Options for predict}
 
 {dlgtab:Main}
 

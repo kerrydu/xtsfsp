@@ -24,7 +24,7 @@
 *27May2023
 /*-------------------------------------------------------*/
 
-program define xtsfsp
+program define xtsfsp,eclass sortpreserve
 version 16
 
 xtsfsp_vparse `0'
@@ -72,7 +72,7 @@ if "`genwvars'"!="" & `"`wxvars'"'!=""{
 }
 
 if `"`te'"'!=""{
-	di "warning: te() was deleted, use xtsfsp_p instead. see help xtsfsp_postestimation."
+	di  "warning: te() was deleted, use xtsfsp_p instead. see help xtsfsp_postestimation."
 }
 ** check the options regarding the spatial weight matirxs
 if ("`wy'"=="" & "`wu'"=="" & "`wv'"==""){

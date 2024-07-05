@@ -8,15 +8,6 @@
 program define xtsfspu, eclass sortpreserve
 version 16
 
-// 	if replay() {
-// 		if (`"`e(cmd)'"' != "xtsfspu") error 301
-// 		Replay `0'
-// 	}
-// 	else	Estimate `0'
-// end
-
-// program Estimate, eclass sortpreserve
-
 syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) genwxvars ///
                               wu(string)  te(name) mldisplay(string)  wx(string) wxvars(varlist) ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) level(real 95) GENWVARS ///
