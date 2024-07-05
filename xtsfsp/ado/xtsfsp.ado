@@ -68,6 +68,10 @@ if "`genwvars'"!="" & `"`wxvars'"'!=""{
 	}
 
 }
+
+if `"`te'"'!=""{
+	di as "warning: te() was deleted, use postestimation command xtsfsp_p instead"
+}
 ** check the options regarding the spatial weight matirxs
 if ("`wy'"=="" & "`wu'"=="" & "`wv'"==""){
 	di as error "No spatial weight matrixs are specified. At least one of wy(), wu() and wv() is required."
