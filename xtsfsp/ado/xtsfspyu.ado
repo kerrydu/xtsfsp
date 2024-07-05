@@ -17,12 +17,13 @@ version 16
 syntax varlist,Uhet(string) wu(string) wy(string) [INItial(name) NOCONstant ///
                               NORMalize(string) te(name) mldisplay(string) ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) ///
-							  level(real 95) COST wxvars(varlist) ///
+							  level(real 95) COST wxvars(varlist) genwxvars ///
 							  MLSEarch(string) MLMAXopt(string) DELVE ///
 							  CONSTraints(string)  wx(string) ///
 							  LNDETFULL lndetmc(numlist >0 min=2 max=2) GENWVARS NOLOG Vhet(string)] 
 
 if ("`nolog'"!="") local nolog qui
+if "`genwxvars'" !="" local genwvars genwvars
 //marksample touse 
 local cmdline xtsfsp `0'
 if ("`wxvars'"!="" & "`wx'"==""){

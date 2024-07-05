@@ -13,7 +13,7 @@ version 16
 
 program Estimate, eclass sortpreserve
 version 16
-syntax varlist,Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
+syntax varlist,Uhet(string) [INItial(name) NOCONstant NORMalize(string) genwxvars ///
                               wu(string) wv(string) mldisplay(string) wx(string) wxvars(varlist) ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) level(real 95) COST ///
 							  MLSEarch(string) MLMAXopt(string) DELVE CONSTraints(string) te(name) ///
@@ -26,6 +26,8 @@ if ("`wu'"=="" & "`wv'"==""){
 	di as red "Spatial weight matrixs should be specified in wu() or/and wv()"
 	error 198
 }
+
+if "`genwxvars'" !="" local genwvars genwvars
 
 local varlist: list uniq varlist
 local uhet: list uniq uhet

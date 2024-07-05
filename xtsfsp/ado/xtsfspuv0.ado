@@ -15,7 +15,7 @@ version 16
 
 
 syntax varlist,Uhet(string) [INItial(name) NOCONstant mldisplay(string) wxvars(varlist) ///
-                              NORMalize(string) wu(string) wv(string) wx(string) ///
+                              NORMalize(string) wu(string) wv(string) wx(string) genwxvars ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) level(real 95) COST ///
 							  MLSEarch(string) MLMAXopt(string) DELVE CONSTraints(string) te(name) ///
 							  lndetmc(numlist >0 min=2 max=2) GENWVARS NOLOG Vhet(string)] 
@@ -27,6 +27,7 @@ if ("`wxvars'"!="" & "`wx'"==""){
 	di as error "varlist is specified in wxvars(), but spmatrix is not specified in wx()"
 	exit 198
 }
+if "`genwxvars'" !="" local genwvars genwvars
 local varlist: list uniq varlist
 local uhet: list uniq uhet
 local vhet: list uniq vhet

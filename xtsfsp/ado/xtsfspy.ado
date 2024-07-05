@@ -15,7 +15,7 @@ version 16
 // program Estimate, eclass sortpreserve
 
 syntax varlist,Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
-                              te(name) GENWVARS mldisplay(string) ///
+                              te(name) GENWVARS mldisplay(string) genwxvars ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) /// 
 							  level(real 95) COST wxvars(varlist) ///
 							  MLSEarch(string) MLMAXopt(string) DELVE ///
@@ -25,6 +25,7 @@ syntax varlist,Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
 if ("`nolog'"!="") local nolog qui
 //marksample touse 
 local cmdline xtsfsp `0'
+if "`genwxvars'" !="" local genwvars genwvars
 if ("`wxvars'"!="" & "`wx'"==""){
 	di as error "varlist is specified in wxvars(), but spmatrix is not specified in wx()"
 	exit 198

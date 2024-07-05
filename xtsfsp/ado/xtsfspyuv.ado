@@ -17,12 +17,13 @@ version 16
 syntax varlist,Uhet(string) [INItial(name) NOCONstant NORMalize(string) wu(string) ///
                               wv(string) te(name) GENWVARS mldisplay(string) ///
                               DELmissing MLPLOT NOGraph MLMODELopt(string) ///
-							  level(real 95) COST wxvars(varlist) ///
+							  level(real 95) COST wxvars(varlist) genwxvars ///
 							  MLSEarch(string) MLMAXopt(string) DELVE ///
 							  CONSTraints(string) wy(string) wx(string) ///
 							  LNDETFULL lndetmc(numlist >0 min=2 max=2) NOLOG Vhet(string)] 
 
 if ("`nolog'"!="") local nolog qui
+if "`genwxvars'" !="" local genwvars genwvars
 local cmdline xtsfsp `0'
 *******************************
 ** check the options regarding the spatial weight matirxs

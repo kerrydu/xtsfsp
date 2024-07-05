@@ -61,7 +61,9 @@ syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
 global diparmopt
 global end1 
 global end2
-if "`genwxvars" !="" local genwvars genwxvars
+if "`genwxvars" !="" {
+	di as "warning: genwxvars was replaced by genwvars, see help xtsfsp"
+}
 if "`genwvars'"!="" & `"`wxvars'"'!=""{
 	foreach v in `wxvars'{
 		confirm new var W_`v'
@@ -70,7 +72,7 @@ if "`genwvars'"!="" & `"`wxvars'"'!=""{
 }
 
 if `"`te'"'!=""{
-	di as "warning: te() was deleted, use postestimation command xtsfsp_p instead"
+	di as "warning: te() was deleted, use xtsfsp_p instead. see help xtsfsp_postestimation."
 }
 ** check the options regarding the spatial weight matirxs
 if ("`wy'"=="" & "`wu'"=="" & "`wv'"==""){
