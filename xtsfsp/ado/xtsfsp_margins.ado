@@ -455,7 +455,7 @@ end
 
 // -------------------------------------------------------------------------------------------------
 
-cap mata mata drop rst_hzust()
+
 
 *****************************************************************************
 
@@ -468,7 +468,7 @@ cap mata mata drop rst_hzust()
  * @see xtsfsp_margins_delta, xtsfsp_margins_mc
  */
  
- 
+ cap mata mata drop rst_hzust()
  cap mata mata drop x_mc()
  cap mata mata drop z_mc()
  cap mata mata drop marginx_mc()
@@ -482,6 +482,7 @@ cap mata mata drop rst_hzust()
 
  
 mata:
+// estimate h(z)*E(u_t^*|e_t)
 real colvector rst_hzust(real colvector yy,
                          real colvector wyy,
                          real matrix xx,
@@ -579,6 +580,7 @@ return(Eie)
 
 }
 
+// find postion of of coefficienct of x and w_x in the parameter vector
 real vector extractposx(string rowvector varnames, string scalar var)
 { 
 	 k = select(1..length(varnames),varnames:==var)
@@ -644,7 +646,7 @@ real scalar marginx_mc( real rowvector b,
 
 
 
-
+// compute [I -rhoW]^(-1) and store in irhow array
 
 void function transinvw(transmorphic matrix wina, 
 	                    real scalar T, 
@@ -676,7 +678,7 @@ real colvector rowsd(real matrix x)
     return(var)
 }
 
-
+// generate coefficiencts from emprical distribution
 real colvector bmc(real matrix V)
 {
     return(V*rnormal(rows(V),1,0,1))
@@ -697,6 +699,7 @@ void function rho_tau(real vector b,
 
 }
 
+// extract rho,gamma and tau from extimated parameters
 void function rho_gamma_tau(real vector b,
                       real scalar rhoindex,
                       real scalar gammaindex,
@@ -706,7 +709,7 @@ void function rho_gamma_tau(real vector b,
                       real scalar taucon,
                       real scalar flag)
 {
-    if(flag!=1){
+    if(flag!=1){ // flag!=1, no transformation
         if (rhoindex !=0){
             rhocon = b[rhoindex]
         }
@@ -750,7 +753,7 @@ void function rho_gamma_tau(real vector b,
 
 }
 
-
+// loop over specified xvars
 real matrix x_mc(string scalar xname,
                      string vector varnames,
                      real colvector bml,
@@ -776,6 +779,7 @@ real matrix x_mc(string scalar xname,
 
     }
 
+    // loop over specified zvars
    real matrix z_mc(string scalar zname,
                      string vector varnames,
                      real colvector bz,

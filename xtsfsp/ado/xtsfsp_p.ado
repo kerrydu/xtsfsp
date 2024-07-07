@@ -277,7 +277,7 @@ for(i=1;i<=nt;i++){
 		Mrho = matinv(I(N)-rho*wyi)
 	}
 	htildeuts = Mrho*htildeuts
-    hbidu = diag(diagonal(Mtau*Mrho))*panelsubmatrix(hb, i, info)
+    hbidu = diag(diagonal(Mrho*Mtau))*panelsubmatrix(hb, i, info)
 	Eie = Eie \ htildeuts
     diru = diru \ hbidu*(us+sqrt(s2_s)*normalden(us/sqrt(s2_s))/normal(us/sqrt(s2_s)))
 }
