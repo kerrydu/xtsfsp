@@ -21,8 +21,8 @@ Author 3 email: inmaculada.alvarez@uam.es
 
 Help keywords:  "stochastic frontier model" "maximium likelihood estimation" "spatial econometrics" "technical efficiency" "productivity" "frontier" "xtfroniter" "xtsfsp"
 
-File list: xtsfsp.ado xtsfsp.sthlp lxtsfsp.mlib xtsfspy.ado xtsfspyu.ado xtsfspyv.ado xtsfspyuv0.ado xtsfspyuv.ado xtsfspu.ado xtsfspv.ado xtsfspuv.ado xtsfspuv0.ado distinct2.ado examples.do xtsfsp_ex1.dta xtsfsp_ex2.dta xtsfsp_ex3.dta xtsfsp_w1.mmat xtsfsp_w2.mmat xtsfsp_w3.mmat province.dbf province.shp chnempirical.dta
+File list: xtsfsp.ado xtsfsp.sthlp lxtsfsp.mlib xtsfspy.ado xtsfspyu.ado xtsfspyv.ado xtsfspyuv0.ado xtsfspyuv.ado xtsfspu.ado xtsfspv.ado xtsfspuv.ado xtsfspuv0.ado distinct2.ado examples.do xtsfsp_ex1.dta xtsfsp_ex2.dta xtsfsp_ex3.dta xtsfsp_w1.mmat xtsfsp_w2.mmat xtsfsp_w3.mmat province.dbf province.shp chnempirical.dta xtsfsp_p.ado xtsfsp_postestimation.sthlp xtsfsp_margins.ado xtsfsp_margins.sthlp
            
 
 Notes: xtsfsp depends on the moremata package. If not already installed, you can
-install it by typing ssc install moremata. Stata 16.1 or later version is reuiqred.
+install it by typing ssc install moremata. Stata 16.1 or later version is required.
