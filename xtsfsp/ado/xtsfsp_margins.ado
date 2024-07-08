@@ -29,6 +29,31 @@ syntax varlist, [reps(real 200) seed(real 123) NODOTS NORMalize FIXUts]
     local veq `e(veq)'
     local ueq `e(ueq)'
     local hasgenwvars `e(hasgenwvars)'
+
+    // count parameters in the first 3 eqs
+    if `"`xeq'"'=="" | `"`xeq'"'=="."{ // only has a constant
+        local nx = 1
+    }
+    else{
+        countnumv `xeq'
+        local nx = r(nv)
+    }
+
+    if `"`veq'"'=="" | `"`veq'"'=="."{ // only has a constant
+        local nv=1
+    }
+    else{
+        countnumv `veq'
+        local nv = r(nv)
+    }
+    if `"`ueq'"==""' | `"`ueq'"'=="."{ // only has a constant
+        local nz=1
+    }
+    else{
+        countnumv `ueq'
+        local nz = r(nv)
+    }
+
     if "`hasgenwvars'"==""{
         di as err "genwvars MUST be specified in the last estimates"
         exit
@@ -186,20 +211,8 @@ if `"`ccomu'"'!=""{
         }
     }
     mata: hzust = st_data(., "`hzt'")
-    countnumv `xeq'
-    local nx = r(nv)
-    if `"`veq'"'=="" | `"`veq'"'=="."{
-        local nv=1
-    }
-    else{
-        countnumv `veq'
-        local nv = r(nv)
-    }
-
     
     local nxv =`nx' + `nv'
-    countnumv `ueq'
-    local nz = r(nv) 
     mata: bz=bml[(`nxv'+1)..(`nxv'+`nz')]
     mata:totezmat= z_mc(`"`ccomu'"',varnames[`=`nxv'+1'..length(varnames)],bz',`T',hzust,irhow,itauw,direzmat,indirezmat)
 
