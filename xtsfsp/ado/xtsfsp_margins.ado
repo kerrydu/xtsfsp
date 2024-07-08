@@ -839,7 +839,7 @@ real matrix x_mc(string scalar xname,
                 iiw2 = asarray(itauw,ukeys[t])
             }
             tote = tote + sum(iiw1*iiw2*diag(ht)*bi*0.5)
-            dire = dire + trace(iiw1*iiw2*diag(ht)*0.5)
+            dire = dire + trace(iiw1*iiw2*diag(ht)*bi*0.5)
         }
         tote = tote/N
         dire = dire/N

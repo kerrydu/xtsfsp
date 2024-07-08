@@ -1,3 +1,10 @@
+* The paper and package has been accepted and forthcoming in Stata Journal.
+
+* Install the package: 
+net install xtsfsp, from("https://raw.githubusercontent.com/kerrydu/xtsfsp/main/xtsfsp/ado") replace
+net get xtsfsp, from("https://raw.githubusercontent.com/kerrydu/xtsfsp/main/xtsfsp/ado") replace
+
+
 
 Package name:  Article tag (Stata Press to add)
 
