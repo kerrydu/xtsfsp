@@ -617,13 +617,13 @@ real scalar marginx_mc( real rowvector b,
         }
     }
     else{
-        N=0
+        NT=0
         totale = 0
         dire = 0
         idire = 0
         for(t=1;t<=T;t++){
             irhow = asarray(iwy,keys[t])
-            N = N+rows(irhow)
+            NT = NT+rows(irhow)
             if (length(b)==1){
                 totale = totale + sum(irhow*b)
                 dire = dire + trace(irhow*b) 
@@ -634,8 +634,8 @@ real scalar marginx_mc( real rowvector b,
                 dire = dire + trace(irhow*b[1]+irhow*w*b[2])
             }
         }
-        dire = dire/N
-        totale = totale/N
+        dire = dire/NT
+        totale = totale/NT
         idire = totale - dire
 
     }
@@ -827,7 +827,7 @@ real matrix x_mc(string scalar xname,
         if(length(ukeys)==1){
             iiw2 = asarray(itauw,ukeys[1])
         }  
-        N = 0  
+        NT = 0  
        
         for(t=1;t<=T;t++){
             ht = panelsubmatrix(hzust,t,info)
@@ -840,9 +840,11 @@ real matrix x_mc(string scalar xname,
             }
             tote = tote + sum(iiw1*iiw2*diag(ht)*bi*0.5)
             dire = dire + trace(iiw1*iiw2*diag(ht)*bi*0.5)
+            NT = NT + N
+
         }
-        tote = tote/N
-        dire = dire/N
+        tote = tote/NT
+        dire = dire/NT
         idire = tote - dire
         return(tote)
     }
