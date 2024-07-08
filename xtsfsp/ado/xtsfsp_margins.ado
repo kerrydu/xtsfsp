@@ -8,7 +8,8 @@ version 16
 syntax varlist, [reps(real 200) seed(real 123) NODOTS NORMalize FIXUts]
 
     if "`nodots'"!="" local qui qui
-    if "`normalize'"!="" local absolute absolute
+    // default: compute absolute ME
+    if "`normalize'"=="" local absolute absolute
     local marginvars `varlist'
     ////////////////////////////////////////
     * extract informtaion from estimates
