@@ -200,7 +200,7 @@ if `"`ccomu'"'!=""{
         mata: uts = st_data(., "`uts'")
         mata: `yyy' = st_data(.,"`yvar'")
         data2mata `xxx' = `xeq'
-        if(`"`veq'"'=="") local veq = 1
+        if(`"`veq'"'=="") local vvv = 1
         else data2mata `vvv' = `veq'
         if(`rho'==0 | `rho'==.){
             local wyvar = 1
