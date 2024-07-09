@@ -46,7 +46,7 @@ syntax varlist, [reps(real 200) seed(real 123) NODOTS NORMalize FIXUts]
         countnumv `veq'
         local nv = r(nv)
     }
-    if `"`ueq'"==""' | `"`ueq'"'=="."{ // only has a constant
+    if `"`ueq'"'=="" | `"`ueq'"'=="."{ // only has a constant
         local nz=1
     }
     else{
