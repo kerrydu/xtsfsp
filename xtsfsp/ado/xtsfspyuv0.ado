@@ -365,7 +365,7 @@ program define genwxvars,rclass
 
 version 16
 
-syntax varlist, aname(name) [tvar(varname)]
+syntax varlist, aname(string) [tvar(varname)]
 
 if `"`tvar'"'==""{
 	tempvar tvar 

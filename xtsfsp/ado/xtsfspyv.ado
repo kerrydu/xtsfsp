@@ -187,12 +187,12 @@ local nwv = r(nw)
 ****************
     qui keep if `touse'
     mata: _pan_tvar =st_data( .,"`time2'")
-	qui genwxvars `yvar', aname(wy_ina) tvar(`time2') // Wednesday, June 26, 2024 at 21:35:25
+	qui genwxvars `yvar', aname(parray(wy_ina)) tvar(`time2') // Wednesday, June 26, 2024 at 21:35:25
 	local wyvar  `r(wxnames)'
 	mata: _order_wyvar = st_data(.,"`wyvar'","`touse'")	
    * generating Wx
 	if(`"`wxvars'"'!=""){
-      qui genwxvars `wxvars', aname(`wxwx') tvar(`time2')
+      qui genwxvars `wxvars', aname(parray(`wxwx')) tvar(`time2')
       local wxvars2  `r(wxnames)'
       mata: _order_wx = st_data(.,"`wxvars2'","`touse'")
 	  //cap mata mata drop wx_ina
@@ -208,7 +208,7 @@ local nwv = r(nw)
 	    mat b0 =e(b)
 		qui predict double xbfron
 		qui gen double ehfron = `yvar'-xbfron
-		qui genwxvars ehfron, aname(wv_ina) tvar(`time2')
+		qui genwxvars ehfron, aname(parray(wv_ina)) tvar(`time2')
 	    local wehfron `r(wxnames)'
 		qui corr ehfron `wehfron'
 		local rhouv = r(rho)
@@ -380,7 +380,7 @@ program define genwxvars,rclass
 
 version 16
 
-syntax varlist, aname(name) [tvar(varname)]
+syntax varlist, aname(string) [tvar(varname)]
 
 if `"`tvar'"'==""{
 	tempvar tvar 
@@ -532,4 +532,19 @@ end
 
 
 
+
+cap mata mata drop parray()
+mata:
+
+function parray(transmorphic matrix w)
+{
+		if(eltype(w)=="pointer"){
+			return(*w)
+		}
+		else{
+			return(w)
+		}
+}
+
+end
 

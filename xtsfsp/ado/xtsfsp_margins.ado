@@ -1,3 +1,4 @@
+*! 2024-09-18
 *! 2024-07-03
 *! Monday, July 1, 2024 at 13:22:19, by Kerry Du
 *! total, direct and indirect effects for xtsfsp
@@ -493,7 +494,7 @@ end
  cap mata mata drop bmc()
  cap mata mata drop rho_tau()
  cap mata mata drop rho_gamma_tau()
-
+ cap mata mata drop parray()
  
 mata:
 // estimate h(z)*E(u_t^*|e_t)
@@ -668,14 +669,14 @@ void function transinvw(transmorphic matrix wina,
 						transmorphic matrix irhow)
 {
 	irhow = asarray_create("real")
-	keys = asarray_keys(wina)
+	keys = asarray_keys(parray(wina))
 	if(length(keys)==1){
-		w = extrpoi(asarray(wina,keys[1]))
+		w = extrpoi(asarray(parray(wina),keys[1]))
 		asarray(irhow,1,matinv(I(rows(w))-rho*w))
 	}
 	else{
 		for(t=1;t<=T;t++){
-			w = extrpoi(asarray(wina,keys[t]))
+			w = extrpoi(asarray(parray(wina),keys[t]))
 			asarray(irhow,t,matinv(I(rows(w))-rho*w))
 		}
 	}
@@ -863,6 +864,14 @@ real matrix x_mc(string scalar xname,
         return(tote)
     }
 
-
+    function parray(transmorphic matrix w)
+    {
+            if(eltype(w)=="pointer"){
+                return(*w)
+            }
+            else{
+                return(w)
+            }
+    }
 
 end
