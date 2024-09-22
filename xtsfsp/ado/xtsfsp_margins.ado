@@ -570,6 +570,7 @@ Eie = J(0,1,.)
 
 for(i=1;i<=nt;i++){
 	//N = info[i,2]-info[i,1]+1
+    esi = panelsubmatrix(es, i, info)
 	if(lenwukeys>1){
 		Mtau = extrpoi(asarray(itauw,i))         
 	}
@@ -578,7 +579,11 @@ for(i=1;i<=nt;i++){
 		iMr = matinv(Mr)
 		pifun(sigv2,Mr,iMr,lndetPi,invPi)
 	}
-	esi = panelsubmatrix(es, i, info)
+    else{
+        //length(esi)
+		invPi = I(length(esi))*invPi
+	}
+	
 	tvpifun(sigv2,Mr,iMr,lndetPi,invPi,i,info)
 	hbi0 = panelsubmatrix(hb, i, info)
 	hbi	= Mtau*hbi0
@@ -873,5 +878,6 @@ real matrix x_mc(string scalar xname,
                 return(w)
             }
     }
+    
 
 end

@@ -98,14 +98,14 @@ else{
 }
 
 if "`uts'"!=""{
-    mata:_u_order_= sputs(`ehat', `sigmav2', `ht', `rho', `gamma', `tau', _cost, `wvmat', `wumat')
+    mata:_u_order_= sputs(`ehat', `sigmav2', `ht', `rho', `gamma', `tau', _cost, parray(`wvmat'), parray(`wumat'))
 }
 
 if "`u'"!=""| "`te'"!=""{
-    mata:_u_order_= sputl(`ehat', `sigmav2', `ht', `rho', `gamma', `tau', _cost, `wvmat', `wumat', _dirsu=., _indirsu=.)
+    mata:_u_order_= sputl(`ehat', `sigmav2', `ht', `rho', `gamma', `tau', _cost, parray(`wvmat'), parray(`wumat'), _dirsu=., _indirsu=.)
 }
 if "`su'"!=""| "`ste'"!=""{
-    mata:_u_order_= spsu(`ehat', `sigmav2', `ht', `rho', `gamma', `tau', _cost, `wymat',`wvmat', `wumat', _dirsu=., _indirsu=.)
+    mata:_u_order_= spsu(`ehat', `sigmav2', `ht', `rho', `gamma', `tau', _cost, parray(`wymat'), parray(`wvmat'), parray(`wumat'), _dirsu=., _indirsu=.)
 }
 
 restore
@@ -167,6 +167,7 @@ if "`ste'"!=""{
 
 end
 
+cap mata mata drop parray()
 cap mata mata drop spsu()
 cap mata mata drop sputl()
 cap mata mata drop sputs()
@@ -261,11 +262,15 @@ for(i=1;i<=nt;i++){
 		iMr = matinv(Mr)
 		pifun(sigv2,Mr,iMr,lndetPi,invPi)
 	}
+	else{
+		invPi = I(N)*invPi
+	}
 
 	tvpifun(sigv2,Mr,iMr,lndetPi,invPi,i,info)
 
 	hbi	= Mtau*panelsubmatrix(hb, i, info)
 	esi = panelsubmatrix(es, i, info)
+	
 	hinvPi = quadcross(hbi,invPi)
 	hinvPihi = quadcross(hinvPi',hbi)
 	esinvPi = quadcross(esi,invPi)
@@ -341,6 +346,7 @@ else{
 	Mr = 1
 	iMr = 1
 	pifun(sigv2,Mr,iMr,lndetPi,invPi)
+	//invPi
 }
 if (lenwukeys==1){
 	spwi = asarray(wu,1)
@@ -366,6 +372,9 @@ for(i=1;i<=nt;i++){
 		iMr = matinv(Mr)
 		pifun(sigv2,Mr,iMr,lndetPi,invPi)
 	}
+	else{
+		invPi = I(N)*invPi
+	}
 
 	tvpifun(sigv2,Mr,iMr,lndetPi,invPi,i,info)
 
@@ -373,6 +382,7 @@ for(i=1;i<=nt;i++){
 
     hbidu = diag(diagonal(Mtau))*panelsubmatrix(hb, i, info)
 	esi = panelsubmatrix(es, i, info)
+	//rows(hbi),rows(invPi),rows(esi)
 	hinvPi = quadcross(hbi,invPi)
 	hinvPihi = quadcross(hinvPi',hbi)
 	esinvPi = quadcross(esi,invPi)
@@ -438,6 +448,7 @@ else{
 	Mr = 1
 	iMr = 1
 	pifun(sigv2,Mr,iMr,lndetPi,invPi)
+	
 }
 if (lenwukeys==1){
 	spwi = asarray(wu,1)
@@ -461,6 +472,9 @@ for(i=1;i<=nt;i++){
 		iMr = matinv(Mr)
 		pifun(sigv2,Mr,iMr,lndetPi,invPi)
 	}
+	else{
+		invPi = I(N)*invPi
+	}
 
 	tvpifun(sigv2,Mr,iMr,lndetPi,invPi,i,info)
 
@@ -477,6 +491,17 @@ for(i=1;i<=nt;i++){
 
 return(Eie)
 	
+}
+
+
+function parray(transmorphic matrix w)
+{
+		if(eltype(w)=="pointer"){
+			return(*w)
+		}
+		else{
+			return(w)
+		}
 }
 
 end

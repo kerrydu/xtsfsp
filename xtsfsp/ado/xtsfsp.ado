@@ -62,7 +62,7 @@ syntax varlist, Uhet(string) [INItial(name) NOCONstant NORMalize(string) ///
 global diparmopt
 global end1 
 global end2
-if "`genwxvars" !="" {
+if "`genwxvars'" !="" {
 	local genwvars genwvars
 	di _n "warning: genwxvars was replaced by genwvars, see help xtsfsp"
 }
