@@ -281,10 +281,10 @@ local nwu = r(nw)
    ereturn local hasgenwvars `genwvars'  
 
    local tau = _b[Wu:_cons]
-   local tau = $rmin/(1+exp(`tau'))+$rmax*exp(`tau')/(1+exp(`tau'))
+   local tau = $rumin/(1+exp(`tau'))+$rumax*exp(`tau')/(1+exp(`tau'))
    local gamma = .
    local rho = _b[Wy:_cons]
-   local rho = $rmin/(1+exp(`rho'))+$rmax*exp(`rho')/(1+exp(`rho'))
+   local rho = $rymin/(1+exp(`rho'))+$rymax*exp(`rho')/(1+exp(`rho'))
   
    ereturn scalar rho = `rho'
    ereturn scalar gamma = `gamma'

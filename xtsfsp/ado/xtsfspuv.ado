@@ -237,9 +237,9 @@ local nwv = r(nw)
    ereturn local  predict  "xtsfsp_p"
    ereturn local  margins  "xtsfsp_margins"   
    local tau = _b[Wu:_cons]
-   local tau = $rmin/(1+exp(`tau'))+$rmax*exp(`tau')/(1+exp(`tau'))
+   local tau = $rumin/(1+exp(`tau'))+$rumax*exp(`tau')/(1+exp(`tau'))
    local gamma = _b[Wv:_cons]
-   local gamma = $rmin/(1+exp(`gamma'))+$rmax*exp(`gamma')/(1+exp(`gamma'))  
+   local gamma = $rvmin/(1+exp(`gamma'))+$rvmax*exp(`gamma')/(1+exp(`gamma'))  
    local rho = .
   
    ereturn scalar rho = `rho'
