@@ -1,3 +1,4 @@
+*! version 1.29, 2025-03-11
 *! 2024-09-18
 *! 2024-07-03
 *! Monday, July 1, 2024 at 13:22:19, by Kerry Du
@@ -622,6 +623,7 @@ real scalar marginx_mc( real rowvector b,
                         real scalar idire)
 {
     keys = asarray_keys(iwy)
+    xkeys = asarray_keys(parray(wx))
     if(length(keys)==1){
         irhow = asarray(iwy,keys[1])
         if (length(b)==1){
@@ -630,7 +632,7 @@ real scalar marginx_mc( real rowvector b,
             idire = totale - dire
         }
         else{
-            w = asarray(wx,keys[1])
+            w = asarray(parray(wx),xkeys[1])
             totale = sum(irhow*b[1]+irhow*w*b[2])/rows(irhow)
             dire = trace(irhow*b[1]+irhow*w*b[2])/rows(irhow)
             idire = totale - dire
@@ -649,7 +651,7 @@ real scalar marginx_mc( real rowvector b,
                 dire = dire + trace(irhow*b) 
             }
             else{
-                w = asarray(wx,keys[t])
+                w = asarray(parray(wx),xkeys[t])
                 totale = totale + sum(irhow*b[1]+irhow*w*b[2])
                 dire = dire + trace(irhow*b[1]+irhow*w*b[2])
             }
